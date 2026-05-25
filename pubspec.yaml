@@ -95,7 +95,7 @@ dependencies:
   onesignal_flutter: ^5.0.4
   readmore: ^3.0.0
   flutter_ringtone_player: ^4.0.0+3
-  record: ^4.4.4
+  record: ^6.1.1
   pinput: ^5.0.0
   flutter_html: ^3.0.0-beta.2
   firebase_dynamic_links: ^5.4.17
