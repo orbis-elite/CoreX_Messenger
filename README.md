@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WhoxaChat
 
 A new Flutter chat application project.
@@ -61,3 +62,6 @@ This project is built with Flutter 3.27.1 and uses the decal_dev branch for deve
 ## Notes for deval_dev Branch
 
 The decal_dev branch contains custom UI components and themes specific to the WhoxaChat design system. Always ensure you're using Flutter 3.27.1 for compatibility with this branch.
+=======
+# CoreX_Messenger
+>>>>>>> e8073a97d8627c2a0dcbacd6ca472a7d76eca00d
