@@ -1,0 +1,467 @@
+// import 'dart:async';
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:logger/logger.dart';
+// import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+// import 'package:corexchat/app.dart';
+// import 'package:corexchat/controller/call_controller.dart/get_roomId_controller.dart';
+// import 'package:corexchat/controller/user_chatlist_controller.dart';
+// import 'package:corexchat/native_controller/audio_native_controller.dart';
+// import 'package:corexchat/src/screens/call/web_rtc/audio_call_screen.dart';
+// import 'package:corexchat/src/screens/call/web_rtc/incoming_call_screen.dart';
+// import 'package:corexchat/src/screens/call/web_rtc/video_call_screen.dart';
+// import 'package:corexchat/src/screens/chat/group_chat_temp.dart';
+// import 'package:corexchat/src/screens/chat/single_chat.dart';
+// import 'package:corexchat/src/screens/layout/bottombar.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
+
+// final logger = Logger(
+//   printer: PrettyPrinter(
+//     methodCount: 0,
+//     errorMethodCount: 5,
+//     lineLength: 80,
+//     colors: true,
+//     printEmojis: true,
+//     printTime: true,
+//   ),
+// );
+
+// class OnesignalService {
+//   final RoomIdController roomIdController = Get.put(RoomIdController());
+//   bool _isInitialized = false;
+
+//   Future<void> initialize() async {
+//     if (_isInitialized) {
+//       logger.i("OneSignal already initialized");
+//       return;
+//     }
+
+//     logger.i("Initializing OneSignal");
+
+//     try {
+//       // Set debug level
+//       OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+
+//       // Initialize OneSignal with your app ID
+//       OneSignal.initialize(
+//           languageController.appSettingsOneSignalData[0].oneSignalAppId!);
+
+//       logger.i("OneSignal core initialized successfully");
+
+//       // Set up OneSignal subscription observer
+//       OneSignal.User.pushSubscription.addObserver((state) {
+//         logger.i("Push subscription state changed:");
+//         logger.i(
+//             "Push subscription optedIn: ${OneSignal.User.pushSubscription.optedIn}");
+//         logger.i("Push subscription ID: ${OneSignal.User.pushSubscription.id}");
+//         logger.i(
+//             "Push subscription token: ${OneSignal.User.pushSubscription.token}");
+//       });
+
+//       // Request notification permissions
+//       final permissionResult =
+//           await OneSignal.Notifications.requestPermission(true);
+//       logger.i("Notification permission request result: $permissionResult");
+
+//       // Setup notification handlers
+//       onNotification();
+
+//       // IMPORTANT: Setup click listener which ALSO handles app opened from notification
+//       onNotificationClick();
+
+//       _isInitialized = true;
+//       logger.i("OneSignal initialization completed successfully");
+//     } catch (e, stack) {
+//       logger.e("Error initializing OneSignal", error: e, stackTrace: stack);
+//     }
+//   }
+
+//   void onNotification() {
+//     logger.i("Setting up OneSignal foreground notification listener");
+
+//     try {
+//       OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+//         try {
+//           logger.i(
+//               "Received foreground notification with ID: ${event.notification.notificationId}");
+
+//           // Override default behavior to ensure we handle the notification ourselves
+//           event.preventDefault();
+
+//           // Extract additionalData with null check
+//           final additionalData = event.notification.additionalData;
+//           if (additionalData == null) {
+//             logger.w("Notification received with null additionalData");
+//             return;
+//           }
+
+//           logger.d("Notification additionalData: $additionalData");
+
+//           // Safely get notification data
+//           final String? callType = additionalData['call_type']?.toString();
+//           if (callType == null) {
+//             logger.w("call_type missing in notification data");
+//             return;
+//           }
+
+//           final bool isMissedCall =
+//               additionalData['missed_call']?.toString() == 'true';
+//           final String roomId = additionalData['room_id']?.toString() ?? '';
+//           final String conversationId =
+//               additionalData['conversation_id']?.toString() ?? '';
+//           final String messageId =
+//               additionalData['message_id']?.toString() ?? '';
+//           final String senderId = additionalData['senderId']?.toString() ?? '';
+//           final String senderName =
+//               additionalData['senderName']?.toString() ?? '';
+//           final String senderImage =
+//               additionalData['sender_profile_image']?.toString() ?? '';
+//           final String receiverImage =
+//               additionalData['receiver_profile_image']?.toString() ?? '';
+//           final String isGroup =
+//               additionalData['is_group']?.toString() ?? 'false';
+
+//           logger.i(
+//               "Processing notification: callType=$callType, isMissedCall=$isMissedCall");
+
+//           // Handle video calls
+//           if (callType == 'video_call') {
+//             logger.i("Handling video call notification");
+
+//             if (isMissedCall) {
+//               logger.i("Processing missed video call");
+//               _handleMissedCall();
+//             } else {
+//               logger.i(
+//                   "Processing incoming video call - Will navigate to IncomingCallScreen");
+
+//               // Use a delayed call for smoother UI
+//               _navigateToIncomingCallScreen(
+//                 roomID: roomId,
+//                 callerImage: senderImage,
+//                 senderName: senderName,
+//                 conversation_id: conversationId,
+//                 message_id: messageId,
+//                 caller_id: senderId,
+//                 isGroupCall: isGroup,
+//                 forVideoCall: true,
+//                 receiverImage: receiverImage,
+//               );
+//             }
+//           }
+//           // Handle audio calls
+//           else if (callType == 'audio_call') {
+//             logger.i("Handling audio call notification");
+
+//             if (isMissedCall) {
+//               logger.i("Processing missed audio call");
+//               _handleMissedCall();
+//             } else {
+//               logger.i(
+//                   "Processing incoming audio call - Will navigate to IncomingCallScreen");
+
+//               _navigateToIncomingCallScreen(
+//                 roomID: roomId,
+//                 callerImage: senderImage,
+//                 senderName: senderName,
+//                 conversation_id: conversationId,
+//                 message_id: messageId,
+//                 caller_id: senderId,
+//                 isGroupCall: isGroup,
+//                 forVideoCall: false,
+//                 receiverImage: receiverImage,
+//               );
+//             }
+//           }
+//         } catch (e, stack) {
+//           logger.e("Error processing foreground notification",
+//               error: e, stackTrace: stack);
+//         }
+//       });
+
+//       logger.i("OneSignal foreground notification listener setup complete");
+//     } catch (e, stack) {
+//       logger.e("Failed to add OneSignal foreground notification listener",
+//           error: e, stackTrace: stack);
+//     }
+//   }
+
+//   void onNotificationClick() {
+//     logger.i("Setting up OneSignal notification click listener");
+
+//     try {
+//       // This handles both:
+//       // 1. Regular clicks on notifications when app is in foreground/background
+//       // 2. App launched from terminated state via notification
+//       OneSignal.Notifications.addClickListener((event) {
+//         logger.i("Notification clicked - actionId: ${event.result.actionId}");
+//         logger.i(
+//             "Notification clicked - launchURL: ${event.notification.launchUrl}");
+
+//         try {
+//           _handleNotificationClickEvent(event);
+//         } catch (e, stack) {
+//           logger.e("Error processing notification click",
+//               error: e, stackTrace: stack);
+//         }
+//       });
+
+//       logger.i("OneSignal notification click listener setup complete");
+//     } catch (e, stack) {
+//       logger.e("Failed to add OneSignal notification click listener",
+//           error: e, stackTrace: stack);
+//     }
+//   }
+
+//   // Central handler for notification clicks
+//   void _handleNotificationClickEvent(OSNotificationClickEvent event) {
+//     logger.i(
+//         "Handling notification click event: actionId=${event.result.actionId}");
+
+//     try {
+//       // Check if additionalData exists
+//       final additionalData = event.notification.additionalData;
+//       if (additionalData == null) {
+//         logger.w("Notification clicked with null additionalData");
+//         return;
+//       }
+
+//       logger.d("Notification click data: $additionalData");
+
+//       // Extract key values with null safety
+//       final String callType = additionalData['call_type']?.toString() ?? '';
+//       final bool isMissedCall =
+//           additionalData['missed_call']?.toString() == 'true';
+//       final String conversationId =
+//           additionalData['conversation_id']?.toString() ?? '';
+//       final String messageId = additionalData['message_id']?.toString() ?? '';
+//       final String senderId = additionalData['senderId']?.toString() ?? '';
+//       final String roomId = additionalData['room_id']?.toString() ?? '';
+//       final String senderName = additionalData['senderName']?.toString() ?? '';
+//       final String senderImage =
+//           additionalData['sender_profile_image']?.toString() ?? '';
+//       final String receiverImage =
+//           additionalData['receiver_profile_image']?.toString() ?? '';
+//       final String isGroup = additionalData['is_group']?.toString() ?? 'false';
+//       final String notificationType =
+//           additionalData['notification_type']?.toString() ?? '';
+
+//       logger.i(
+//           "Processing notification click: type=$notificationType, callType=$callType, isMissedCall=$isMissedCall");
+
+//       // Handle action buttons - Accept Call
+//       if (event.result.actionId == "accept") {
+//         logger.i("User accepted call: callType=$callType");
+
+//         if (callType == 'video_call') {
+//           logger.i("Accepting video call - navigating to VideoCallScreen");
+
+//           stopRingtone();
+
+//           _navigateToScreen(
+//             () => VideoCallScreen(
+//               roomID: roomId,
+//               conversation_id: conversationId,
+//               isGroupCall: isGroup,
+//             ),
+//           );
+//         } else if (callType == 'audio_call') {
+//           logger.i("Accepting audio call - navigating to AudioCallScreen");
+
+//           stopRingtone();
+
+//           _navigateToScreen(
+//             () => AudioCallScreen(
+//               roomID: roomId,
+//               conversation_id: conversationId,
+//               receiverImage: senderImage,
+//               receiverUserName: senderName,
+//               isGroupCall: isGroup,
+//             ),
+//           );
+//         }
+//       }
+//       // Handle action buttons - Decline Call
+//       else if (event.result.actionId == "decline") {
+//         logger.i("User declined call: callType=$callType, isGroup=$isGroup");
+
+//         stopRingtone();
+
+//         if (isGroup == "true") {
+//           logger.i("Declined group call - returning to main screen");
+
+//           _navigateToScreen(() => TabbarScreen(currentTab: 0));
+//         } else {
+//           logger.i("Declined individual call - calling callCutByReceiver");
+
+//           try {
+//             roomIdController.callCutByReceiver(
+//               conversationID: conversationId,
+//               message_id: messageId,
+//               caller_id: senderId,
+//             );
+//             logger.i("Successfully called callCutByReceiver");
+//           } catch (e, stack) {
+//             logger.e("Failed to call callCutByReceiver",
+//                 error: e, stackTrace: stack);
+//           }
+//         }
+//       }
+//       // Handle default notification click (no specific action button)
+//       else {
+//         logger.i("Default notification click handling");
+
+//         // Call notification handling
+//         if ((callType == 'video_call' || callType == 'audio_call') &&
+//             !isMissedCall) {
+//           logger.i(
+//               "Handling call notification click - navigating to IncomingCallScreen");
+
+//           stopRingtone();
+
+//           _navigateToIncomingCallScreen(
+//             roomID: roomId,
+//             callerImage: senderImage,
+//             senderName: senderName,
+//             conversation_id: conversationId,
+//             message_id: messageId,
+//             caller_id: senderId,
+//             isGroupCall: isGroup,
+//             forVideoCall: callType == 'video_call',
+//             receiverImage: receiverImage,
+//           );
+//         }
+//         // Message notifications
+//         else if (notificationType == 'message') {
+//           logger.i("Handling message notification click: isGroup=${isGroup}");
+
+//           // Handle direct messages
+//           if (isGroup == 'false') {
+//             logger.i("Navigating to SingleChatMsg");
+
+//             _navigateToScreen(
+//               () => SingleChatMsg(
+//                 conversationID: conversationId,
+//                 username: senderName,
+//                 userPic: additionalData['profile_image']?.toString() ?? '',
+//                 index: 0,
+//                 isMsgHighLight: false,
+//                 isBlock: bool.parse(
+//                     additionalData['is_block']?.toString() ?? 'false'),
+//                 userID: senderId,
+//               ),
+//             );
+//           }
+//           // Handle group messages
+//           else {
+//             logger.i("Navigating to GroupChatMsg");
+
+//             _navigateToScreen(
+//               () => GroupChatMsg(
+//                 conversationID: conversationId,
+//                 gPusername: senderName,
+//                 gPPic: additionalData['profile_image']?.toString() ?? '',
+//                 index: 0,
+//                 isMsgHighLight: false,
+//               ),
+//             );
+//           }
+//         } else if (isMissedCall) {
+//           logger.i(
+//               "Handling missed call notification - navigating to TabbarScreen");
+//           _handleMissedCall();
+//         }
+//       }
+//     } catch (e, stack) {
+//       logger.e("Error processing notification click event",
+//           error: e, stackTrace: stack);
+//     }
+//   }
+
+//   // Helper method to handle missed calls
+//   void _handleMissedCall() {
+//     logger.i("Handling missed call notification");
+
+//     OneSignal.Notifications.clearAll();
+//     stopRingtone();
+
+//     logger.i("Navigating to TabbarScreen");
+//     _navigateToScreen(() => TabbarScreen(currentTab: 0));
+
+//     Get.put(ChatListController()).forChatList();
+//   }
+
+//   // Helper method to navigate to incoming call screen
+//   void _navigateToIncomingCallScreen({
+//     required String roomID,
+//     required String callerImage,
+//     required String senderName,
+//     required String conversation_id,
+//     required String message_id,
+//     required String caller_id,
+//     required String isGroupCall,
+//     required bool forVideoCall,
+//     required String receiverImage,
+//   }) {
+//     logger.i(
+//         "Preparing to navigate to IncomingCallScreen (forVideo: $forVideoCall)");
+
+//     _navigateToScreen(
+//       () => IncomingCallScrenn(
+//         roomID: roomID,
+//         callerImage: callerImage,
+//         senderName: senderName,
+//         conversation_id: conversation_id,
+//         message_id: message_id,
+//         caller_id: caller_id,
+//         isGroupCall: isGroupCall,
+//         forVideoCall: forVideoCall,
+//         receiverImage: receiverImage,
+//       ),
+//     );
+
+//     logger.i("Starting ringtone and setting earpiece");
+//     FlutterRingtonePlayer().playRingtone();
+//     AudioManager.setEarpiece();
+//   }
+
+//   // Generic navigation method with consistent parameters
+//   void _navigateToScreen(Widget Function() screenBuilder) {
+//     logger.i("Executing navigation with Get.offAll()");
+
+//     try {
+//       // Add delay to ensure UI thread is not blocked
+//       Future.delayed(Duration(milliseconds: 200), () {
+//         try {
+//           Get.offAll(
+//             screenBuilder,
+//             predicate: (_) => false, // Clear the entire navigation stack
+//             transition: Transition.fade,
+//             duration: Duration(milliseconds: 300),
+//           );
+//           logger.i("Navigation completed successfully");
+//         } catch (e, stack) {
+//           logger.e("Navigation failed inside delayed call",
+//               error: e, stackTrace: stack);
+//         }
+//       });
+//     } catch (e, stack) {
+//       logger.e("Failed to set up delayed navigation",
+//           error: e, stackTrace: stack);
+//     }
+//   }
+// }
+
+// // Keep existing stopRingtone function
+// void stopRingtone() {
+//   try {
+//     if (Platform.isAndroid) {
+//       FlutterRingtonePlayer().stop();
+//     } else {
+//       AudioManager.pauseAudio();
+//     }
+//   } catch (e) {
+//     logger.e("Error stopping ringtone: $e");
+//   }
+// }

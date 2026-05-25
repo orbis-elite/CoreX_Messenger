@@ -1,0 +1,544 @@
+// ignore_for_file: avoid_print
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:get/get.dart';
+import 'package:corexchat/app.dart';
+import 'package:corexchat/controller/call_controller.dart/get_roomId_controller.dart';
+import 'package:corexchat/controller/user_chatlist_controller.dart';
+import 'package:corexchat/native_controller/audio_native_controller.dart';
+import 'package:corexchat/src/screens/call/web_rtc/audio_call_screen.dart';
+import 'package:corexchat/src/screens/call/web_rtc/incoming_call_screen.dart';
+import 'package:corexchat/src/screens/call/web_rtc/video_call_screen.dart';
+import 'package:corexchat/src/screens/chat/group_chat_temp.dart';
+import 'package:corexchat/src/screens/chat/single_chat.dart';
+import 'package:corexchat/src/screens/layout/bottombar.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:logger/logger.dart';
+
+class OnesignalService {
+  final Logger logger = Logger(
+    printer: PrettyPrinter(
+      methodCount: 0,
+      errorMethodCount: 5,
+      lineLength: 80,
+      colors: true,
+      printEmojis: true,
+      printTime: true,
+    ),
+  );
+  final RoomIdController roomIdController = Get.put(RoomIdController());
+
+  // initialize() {
+  //   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+
+  //   OneSignal.initialize(
+  //       languageController.appSettingsOneSignalData[0].oneSignalAppId!);
+  //   // OneSignal.initialize("fa0d2111-1ab5-49d7-ad5d-976b8d9d66a4");
+  //   OneSignal.User.pushSubscription.addObserver((state) {
+  //     print(
+  //         "pushSubscription optedIn ${OneSignal.User.pushSubscription.optedIn}");
+  //     print("pushSubscription id ${OneSignal.User.pushSubscription.id}");
+  //     print("pushSubscription token ${OneSignal.User.pushSubscription.token}");
+  //     print(
+  //         "pushSubscription current.jsonRepresentation ${state.current.jsonRepresentation()}");
+  //   });
+
+  //   OneSignal.Notifications.requestPermission(true);
+  // }
+
+  Future<void> initialize() async {
+    try {
+      logger.i("Initializing OneSignal");
+      OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+
+      OneSignal.initialize(
+          languageController.appSettingsOneSignalData[0].oneSignalAppId!);
+
+      logger.i("OneSignal initialized successfully");
+
+      // Set up notification handling AFTER initialization
+      onNotification();
+      onNotificationClick();
+
+      await OneSignal.Notifications.requestPermission(true);
+      logger.i("Notification permissions requested");
+    } catch (e, stackTrace) {
+      logger.e("Error initializing OneSignal",
+          error: e, stackTrace: stackTrace);
+    }
+  }
+
+  // onNotifiacation() {
+  //   OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+  //     print("event body ${event.notification.additionalData}");
+  //     if (event.notification.additionalData!['call_type'].toString() ==
+  //         'video_call') {
+  //       print("video call");
+  //       if (event.notification.additionalData!['missed_call'].toString() ==
+  //           'true') {
+  //         OneSignal.Notifications.clearAll();
+  //         stopRingtone();
+  //         Get.offAll(
+  //           TabbarScreen(
+  //             currentTab: 0,
+  //           ),
+  //         );
+  //         Get.put(ChatListController()).forChatList();
+  //       } else {
+  //         Get.to(IncomingCallScrenn(
+  //           roomID: event.notification.additionalData!['room_id'].toString(),
+  //           callerImage: event
+  //               .notification.additionalData!['sender_profile_image']
+  //               .toString(),
+  //           senderName:
+  //               event.notification.additionalData!['senderName'].toString(),
+  //           conversation_id: event
+  //               .notification.additionalData!['conversation_id']
+  //               .toString(),
+  //           message_id:
+  //               event.notification.additionalData!['message_id'].toString(),
+  //           caller_id:
+  //               event.notification.additionalData!['senderId'].toString(),
+  //           isGroupCall:
+  //               event.notification.additionalData!['is_group'].toString(),
+  //         ));
+  //         FlutterRingtonePlayer().playRingtone();
+
+  //         AudioManager.setEarpiece();
+  //       }
+  //     } else if (event.notification.additionalData!['call_type'].toString() ==
+  //         'audio_call') {
+  //       print("audio call");
+  //       if (event.notification.additionalData!['missed_call'].toString() ==
+  //           "true") {
+  //         OneSignal.Notifications.clearAll();
+  //         stopRingtone();
+  //         Get.offAll(
+  //           TabbarScreen(
+  //             currentTab: 0,
+  //           ),
+  //         );
+  //         Get.put(ChatListController()).forChatList();
+  //       } else {
+  //         Get.to(IncomingCallScrenn(
+  //           roomID: event.notification.additionalData!['room_id'].toString(),
+  //           callerImage: event
+  //               .notification.additionalData!['sender_profile_image']
+  //               .toString(),
+  //           senderName:
+  //               event.notification.additionalData!['senderName'].toString(),
+  //           conversation_id: event
+  //               .notification.additionalData!['conversation_id']
+  //               .toString(),
+  //           message_id:
+  //               event.notification.additionalData!['message_id'].toString(),
+  //           caller_id:
+  //               event.notification.additionalData!['senderId'].toString(),
+  //           forVideoCall: false,
+  //           receiverImage: event
+  //               .notification.additionalData!['receiver_profile_image']
+  //               .toString(),
+  //           isGroupCall:
+  //               event.notification.additionalData!['is_group'].toString(),
+  //         ));
+  //         FlutterRingtonePlayer().playRingtone();
+  //         AudioManager.setEarpiece();
+  //       }
+  //     }
+  //   });
+  // }
+  void onNotification() {
+    logger.i("Setting up OneSignal notification listeners");
+
+    try {
+      OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+        try {
+          logger.i(
+              "Received foreground notification with ID: ${event.notification.notificationId}");
+
+          // Override default behavior to ensure we handle the notification ourselves
+          event.preventDefault();
+
+          // Extract additionalData with null check
+          final additionalData = event.notification.additionalData;
+          if (additionalData == null) {
+            logger.w("Notification received with null additionalData");
+            return;
+          }
+
+          logger.d("Notification additionalData: $additionalData");
+
+          // Check if critical fields exist
+          if (!additionalData.containsKey('call_type')) {
+            logger.w("call_type missing in notification data");
+            return;
+          }
+
+          // Extract key values with null safety
+          final String callType = additionalData['call_type']?.toString() ?? '';
+          final bool isMissedCall =
+              additionalData['missed_call']?.toString() == 'true';
+          final String roomId = additionalData['room_id']?.toString() ?? '';
+          final String conversationId =
+              additionalData['conversation_id']?.toString() ?? '';
+          final String messageId =
+              additionalData['message_id']?.toString() ?? '';
+          final String senderId = additionalData['senderId']?.toString() ?? '';
+          final String senderName =
+              additionalData['senderName']?.toString() ?? '';
+          final String senderImage =
+              additionalData['sender_profile_image']?.toString() ?? '';
+          final String receiverImage =
+              additionalData['receiver_profile_image']?.toString() ?? '';
+          final String isGroup =
+              additionalData['is_group']?.toString() ?? 'false';
+
+          logger.i(
+              "Processing notification: callType=$callType, isMissedCall=$isMissedCall");
+
+          // Handle video calls
+          if (callType == 'video_call') {
+            logger.i("Handling video call notification");
+
+            if (isMissedCall) {
+              logger.i("Processing missed video call");
+              _handleMissedCall();
+            } else {
+              logger.i(
+                  "Processing incoming video call - Will navigate to IncomingCallScreen");
+
+              // Added delay to ensure UI thread is not blocked
+              Future.delayed(Duration(milliseconds: 200), () {
+                logger.i("Executing navigation to IncomingCallScreen");
+
+                try {
+                  // Force removal of all screens and navigator to incoming call screen
+                  Get.offAll(
+                    () => IncomingCallScrenn(
+                      roomID: roomId,
+                      callerImage: senderImage,
+                      senderName: senderName,
+                      conversation_id: conversationId,
+                      message_id: messageId,
+                      caller_id: senderId,
+                      isGroupCall: isGroup,
+                      forVideoCall: true,
+                      receiverImage: receiverImage,
+                    ),
+                    predicate: (_) =>
+                        false, // Clear the entire navigation stack
+                    transition: Transition.fade,
+                    duration: Duration(milliseconds: 300),
+                  );
+
+                  logger.i("Navigation complete, starting ringtone");
+                  FlutterRingtonePlayer().playRingtone();
+                  AudioManager.setEarpiece();
+                } catch (e, stack) {
+                  logger.e("Navigation to IncomingCallScreen failed",
+                      error: e, stackTrace: stack);
+                }
+              });
+            }
+          }
+          // Handle audio calls
+          else if (callType == 'audio_call') {
+            logger.i("Handling audio call notification");
+
+            if (isMissedCall) {
+              logger.i("Processing missed audio call");
+              _handleMissedCall();
+            } else {
+              logger.i(
+                  "Processing incoming audio call - Will navigate to IncomingCallScreen");
+
+              // Added delay to ensure UI thread is not blocked
+              Future.delayed(Duration(milliseconds: 200), () {
+                logger.i("Executing navigation to IncomingCallScreen");
+
+                try {
+                  // Force removal of all screens and navigate to incoming call screen
+                  Get.offAll(
+                    () => IncomingCallScrenn(
+                      roomID: roomId,
+                      callerImage: senderImage,
+                      senderName: senderName,
+                      conversation_id: conversationId,
+                      message_id: messageId,
+                      caller_id: senderId,
+                      isGroupCall: isGroup,
+                      forVideoCall: false,
+                      receiverImage: receiverImage,
+                    ),
+                    predicate: (_) =>
+                        false, // Clear the entire navigation stack
+                    transition: Transition.fade,
+                    duration: Duration(milliseconds: 300),
+                  );
+
+                  logger.i("Navigation complete, starting ringtone");
+                  FlutterRingtonePlayer().playRingtone();
+                  AudioManager.setEarpiece();
+                } catch (e, stack) {
+                  logger.e("Navigation to IncomingCallScreen failed",
+                      error: e, stackTrace: stack);
+                }
+              });
+            }
+          }
+        } catch (e, stack) {
+          logger.e("Error processing notification",
+              error: e, stackTrace: stack);
+        }
+      });
+
+      logger.i("OneSignal notification listener setup complete");
+    } catch (e, stack) {
+      logger.e("Failed to add OneSignal notification listener",
+          error: e, stackTrace: stack);
+    }
+  }
+
+  void _handleMissedCall() {
+    logger.i("Handling missed call");
+    OneSignal.Notifications.clearAll();
+    stopRingtone();
+
+    logger.i("Navigating to main screen");
+    Get.offAll(
+      () => TabbarScreen(currentTab: 0),
+      transition: Transition.fade,
+    );
+
+    Get.put(ChatListController()).forChatList();
+  }
+
+  void _navigateToIncomingCallScreen({
+    required String roomID,
+    required String callerImage,
+    required String senderName,
+    required String conversation_id,
+    required String message_id,
+    required String caller_id,
+    required String isGroupCall,
+    required bool forVideoCall,
+    required String receiverImage,
+  }) {
+    logger.i("Preparing to navigate to incoming call screen");
+
+    // Use a delayed call to ensure UI thread is not blocked
+    // This can help with navigation issues
+    Timer(Duration(milliseconds: 150), () {
+      try {
+        logger.i("Executing navigation to incoming call screen");
+
+        // Use Get.offAll instead of Get.to to clear navigation stack
+        Get.offAll(
+          () => IncomingCallScrenn(
+            roomID: roomID,
+            callerImage: callerImage,
+            senderName: senderName,
+            conversation_id: conversation_id,
+            message_id: message_id,
+            caller_id: caller_id,
+            isGroupCall: isGroupCall,
+            forVideoCall: forVideoCall,
+            receiverImage: receiverImage,
+          ),
+          transition: Transition.fade,
+        );
+
+        logger.i("Starting ringtone and setting earpiece");
+        FlutterRingtonePlayer().playRingtone();
+        AudioManager.setEarpiece();
+
+        logger.i("Navigation to incoming call screen completed successfully");
+      } catch (e, stack) {
+        logger.e("Failed to navigate to incoming call screen",
+            error: e, stackTrace: stack);
+      }
+    });
+  }
+
+  onNotificationClick() {
+    OneSignal.Notifications.addClickListener((event) {
+      if (event.result.actionId == "accept") {
+        print("actionId accept");
+        if (event.notification.additionalData!['call_type'].toString() ==
+            'video_call') {
+          print("video call");
+
+          stopRingtone();
+          Get.off(VideoCallScreen(
+            roomID: event.notification.additionalData!['room_id'].toString(),
+            conversation_id: event
+                .notification.additionalData!['conversation_id']
+                .toString(),
+            isGroupCall:
+                event.notification.additionalData!['is_group'].toString(),
+          ));
+        } else if (event.notification.additionalData!['call_type'].toString() ==
+            'audio_call') {
+          print("audio call");
+
+          stopRingtone();
+          Get.off(AudioCallScreen(
+            roomID: event.notification.additionalData!['room_id'].toString(),
+            conversation_id: event
+                .notification.additionalData!['conversation_id']
+                .toString(),
+            receiverImage: event
+                .notification.additionalData!["sender_profile_image"]
+                .toString(),
+            receiverUserName:
+                event.notification.additionalData!["senderName"].toString(),
+            isGroupCall:
+                event.notification.additionalData!['is_group'].toString(),
+          ));
+        }
+      } else if (event.result.actionId == "decline") {
+        print("actionId decline");
+        if (event.notification.additionalData!['call_type'].toString() ==
+            'video_call') {
+          stopRingtone();
+          if (event.notification.additionalData!['is_group'].toString() ==
+              "true") {
+            Get.offAll(
+              TabbarScreen(
+                currentTab: 0,
+              ),
+            );
+          } else {
+            roomIdController.callCutByReceiver(
+              conversationID: event
+                  .notification.additionalData!['conversation_id']
+                  .toString(),
+              message_id:
+                  event.notification.additionalData!['message_id'].toString(),
+              caller_id:
+                  event.notification.additionalData!['senderId'].toString(),
+            );
+          }
+        } else if (event.notification.additionalData!['call_type'].toString() ==
+            'audio_call') {
+          stopRingtone();
+          if (event.notification.additionalData!['is_group'].toString() ==
+              "true") {
+            Get.offAll(
+              TabbarScreen(
+                currentTab: 0,
+              ),
+            );
+          } else {
+            roomIdController.callCutByReceiver(
+              conversationID: event
+                  .notification.additionalData!['conversation_id']
+                  .toString(),
+              message_id:
+                  event.notification.additionalData!['message_id'].toString(),
+              caller_id:
+                  event.notification.additionalData!['senderId'].toString(),
+            );
+          }
+        }
+      } else {
+        if (event.notification.additionalData!['call_type'].toString() ==
+                'video_call' &&
+            event.notification.additionalData!['missed_call'].toString() ==
+                'false') {
+          stopRingtone();
+          Get.to(IncomingCallScrenn(
+            roomID: event.notification.additionalData!['room_id'].toString(),
+            callerImage: event
+                .notification.additionalData!['sender_profile_image']
+                .toString(),
+            senderName:
+                event.notification.additionalData!['senderName'].toString(),
+            conversation_id: event
+                .notification.additionalData!['conversation_id']
+                .toString(),
+            message_id:
+                event.notification.additionalData!['message_id'].toString(),
+            caller_id:
+                event.notification.additionalData!['senderId'].toString(),
+            isGroupCall:
+                event.notification.additionalData!['is_group'].toString(),
+          ));
+        } else if (event.notification.additionalData!['call_type'].toString() ==
+                'audio_call' &&
+            event.notification.additionalData!['missed_call'].toString() ==
+                'false') {
+          stopRingtone();
+          Get.to(IncomingCallScrenn(
+            roomID: event.notification.additionalData!['room_id'].toString(),
+            callerImage: event
+                .notification.additionalData!['sender_profile_image']
+                .toString(),
+            senderName:
+                event.notification.additionalData!['senderName'].toString(),
+            conversation_id: event
+                .notification.additionalData!['conversation_id']
+                .toString(),
+            message_id:
+                event.notification.additionalData!['message_id'].toString(),
+            caller_id:
+                event.notification.additionalData!['senderId'].toString(),
+            forVideoCall: false,
+            receiverImage: event
+                .notification.additionalData!['receiver_profile_image']
+                .toString(),
+            isGroupCall:
+                event.notification.additionalData!['is_group'].toString(),
+          ));
+        } else if (event.notification.additionalData!['notification_type']
+                    .toString() ==
+                'message' &&
+            event.notification.additionalData!['is_group'].toString() ==
+                'false') {
+          // Get.find<SingleChatContorller>().getdetailschat(
+          //     event.notification.additionalData!['conversation_id'].toString());
+          Get.to(SingleChatMsg(
+            conversationID: event
+                .notification.additionalData!['conversation_id']
+                .toString(),
+            username:
+                event.notification.additionalData!['senderName'].toString(),
+            userPic:
+                event.notification.additionalData!['profile_image'].toString(),
+            index: 0,
+            isMsgHighLight: false,
+            isBlock: bool.parse(event.notification.additionalData!['is_block']),
+            userID: event.notification.additionalData!['senderId'].toString(),
+          ));
+        } else if (event.notification.additionalData!['notification_type']
+                    .toString() ==
+                'message' &&
+            event.notification.additionalData!['is_group'].toString() ==
+                'true') {
+          Get.to(GroupChatMsg(
+            conversationID: event
+                .notification.additionalData!['conversation_id']
+                .toString(),
+            gPusername:
+                event.notification.additionalData!['senderName'].toString(),
+            gPPic:
+                event.notification.additionalData!['profile_image'].toString(),
+            index: 0,
+            isMsgHighLight: false,
+          ));
+        }
+      }
+    });
+  }
+}
+
+stopRingtone() {
+  if (Platform.isAndroid) {
+    FlutterRingtonePlayer().stop();
+  } else {
+    AudioManager.pauseAudio();
+  }
+}

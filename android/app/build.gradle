@@ -1,0 +1,114 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
+    id 'com.google.gms.google-services'
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def keyProperties = new Properties()
+def keyPropertiesFile = rootProject.file('key.properties')
+
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+} else {
+    throw new GradleException(
+            "key.properties not found; you need to create it with your keystore details"
+    )
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
+def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
+
+android {
+    namespace "com.corexmessenger.chat"
+
+    compileSdk 35
+    ndkVersion "27.0.12077973"
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.corexmessenger.chat"
+
+        minSdk 24
+        targetSdk 35
+
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(keyProperties['storeFile'])
+            storePassword keyProperties['storePassword']
+            keyAlias keyProperties['keyAlias']
+            keyPassword keyProperties['keyPassword']
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+
+        release {
+            signingConfig signingConfigs.release
+
+            minifyEnabled false
+            shrinkResources false
+
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android.txt'
+            ), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+
+    implementation platform('com.google.firebase:firebase-bom:31.0.0')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    implementation 'com.github.AbedElazizShe:LightCompressor:1.3.2'
+
+    implementation 'com.onesignal:OneSignal:[5.0.0,5.99.99]'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
+
+apply plugin: 'com.google.gms.google-services'

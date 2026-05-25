@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "664207419824",
+    "project_id": "corex-messenger",
+    "storage_bucket": "corex-messenger.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664207419824:android:e6228e33fce53c8bb5ce75",
+        "android_client_info": {
+          "package_name": "com.corexmessenger.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664207419824-cqi2r51uguclib571v3vjk6i1r4m5o47.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.corexmessenger.chat",
+            "certificate_hash": "9ae1429227d1fa73865cec7c601b3567c88dae9c"
+          }
+        },
+        {
+          "client_id": "664207419824-jd28797nka2undvo5eosibkp9s8dgdvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.corexmessenger.chat",
+            "certificate_hash": "a824563e5ef192262071c4c9f92e5c1d54f6516d"
+          }
+        },
+        {
+          "client_id": "664207419824-u1ejfdjkd81h62he5tts0e9iqhla2t3v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.corexmessenger.chat",
+            "certificate_hash": "93be3290d529bcf1cc2c25eb62e0764cc9d775f7"
+          }
+        },
+        {
+          "client_id": "664207419824-5uafre0rgbnrd1tvsbbel044h09uof8i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBckClAAiHaamiRzbSenfaZEwSmmIaJ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664207419824-5uafre0rgbnrd1tvsbbel044h09uof8i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
