@@ -99,7 +99,7 @@ dependencies:
   pinput: ^5.0.0
   flutter_html: ^3.0.0-beta.2
   firebase_dynamic_links: ^5.4.17
-  qr_code_scanner: ^1.0.1
+  mobile_scanner: ^5.2.3
   qr_flutter: ^4.1.0
   flutter_dotenv: ^5.2.1
   logger: ^2.5.0
