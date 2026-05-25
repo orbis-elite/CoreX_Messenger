@@ -1,0 +1,36 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub/
+build/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+
+# macOS
+macos/Pods/
+
+# Logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Xcode
+DerivedData/
+*.xcworkspace
+!ios/Runner.xcworkspace
+
+# Temporary
+*.tmp
+*.temp
+.DS_Store
