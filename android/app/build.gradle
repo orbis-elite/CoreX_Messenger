@@ -29,6 +29,7 @@ def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '
 def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 android {
+
     namespace "com.corexmessenger.chat"
 
     compileSdk 35
@@ -40,7 +41,18 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
     defaultConfig {
+
         applicationId "com.corexmessenger.chat"
 
         minSdk 24
@@ -51,6 +63,7 @@ android {
 
         multiDexEnabled true
     }
+}
 
     signingConfigs {
         release {
@@ -99,6 +112,8 @@ flutter {
 }
 
 dependencies {
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
 
     implementation platform('com.google.firebase:firebase-bom:31.0.0')
 
