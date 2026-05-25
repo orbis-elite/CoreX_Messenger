@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# WhoxaChat
+# CoreX Messenger
 
 A new Flutter chat application project.
 
