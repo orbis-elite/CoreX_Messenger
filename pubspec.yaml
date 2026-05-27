@@ -290,7 +290,7 @@ dependencies:
   # GIPHY
   # ---------------------------------------------------------------------------
 
-  enough_giphy_flutter: ^0.4.0
+  giphy_get: ^3.4.1
 
   # ---------------------------------------------------------------------------
   # PURCHASE / SUBSCRIPTION
@@ -371,8 +371,6 @@ dependency_overrides:
   flutter_platform_widgets:
     git:
       url: https://github.com/packages-primocys/flutter_platform_widgets_3.3.5.git
-
-  enough_platform_widgets: ^1.0.1
 
   # ---------------------------------------------------------------------------
   # LIGHT COMPRESSOR FIX
