@@ -372,9 +372,7 @@ dependency_overrides:
     git:
       url: https://github.com/packages-primocys/flutter_platform_widgets_3.3.5.git
 
-  enough_platform_widgets:
-    git:
-      url: https://github.com/packages-primocys/enough_platform_widgets_0.7.4.git
+  enough_platform_widgets: ^1.0.1
 
   # ---------------------------------------------------------------------------
   # LIGHT COMPRESSOR FIX

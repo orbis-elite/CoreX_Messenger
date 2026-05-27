@@ -284,12 +284,11 @@ packages:
   enough_platform_widgets:
     dependency: "direct overridden"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f29dbbae17163bd4becd5297d32ec8f6070b0557
-      url: "https://github.com/packages-primocys/enough_platform_widgets_0.7.4.git"
-    source: git
-    version: "0.7.4"
+      name: enough_platform_widgets
+      sha256: "1ef594884bcb83ada312b39d28f799970949a3e1b67dd0b0d086e17c9aab5235"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   events_emitter:
     dependency: transitive
     description:
