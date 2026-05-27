@@ -6899,7 +6899,7 @@ class _SingleChatMsgState extends State<SingleChatMsg> {
   void _selectGif() async {
     const giphyApiKey = 'M74S0wxPj9sOl30judPKMjTU6GkmmjpC';
 
-    final gif = await Giphy.getGif(
+    final gif = await GiphyGet.getGif(
         context: context,
         apiKey: giphyApiKey,
         type: GiphyType.gifs,
@@ -6910,7 +6910,7 @@ class _SingleChatMsgState extends State<SingleChatMsg> {
         searchHintText: "search",
         usePlatformBottomSheet: true,
         gridSpacing: 4.0,
-        gridType: GridType.squareFixedColumns);
+        crossAxisCount: 2);
 
     if (gif != null) {
       chatContorller.isSendMsg.value = true;
