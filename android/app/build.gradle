@@ -1,118 +1,262 @@
+/*
+|--------------------------------------------------------------------------
+| CoreX Messenger
+|--------------------------------------------------------------------------
+|
+| Android App Module Configuration
+|
+|--------------------------------------------------------------------------
+|
+| Stable Modern-Compatible Android Configuration
+|
+|--------------------------------------------------------------------------
+*/
+
 plugins {
+
     id 'com.android.application'
     id 'kotlin-android'
     id 'dev.flutter.flutter-gradle-plugin'
     id 'com.google.gms.google-services'
 }
 
+// =============================================================================
+// LOCAL PROPERTIES
+// =============================================================================
+
 def localProperties = new Properties()
+
 def localPropertiesFile = rootProject.file('local.properties')
 
 if (localPropertiesFile.exists()) {
+
     localPropertiesFile.withReader('UTF-8') { reader ->
+
         localProperties.load(reader)
     }
 }
 
+// =============================================================================
+// KEYSTORE
+// =============================================================================
+
 def keyProperties = new Properties()
+
 def keyPropertiesFile = rootProject.file('key.properties')
 
 if (keyPropertiesFile.exists()) {
-    keyProperties.load(new FileInputStream(keyPropertiesFile))
-} else {
-    throw new GradleException(
-            "key.properties not found; you need to create it with your keystore details"
+
+    keyProperties.load(
+            new FileInputStream(keyPropertiesFile)
     )
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
-def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
+// =============================================================================
+// FLUTTER VERSION
+// =============================================================================
+
+def flutterVersionCode =
+        localProperties.getProperty('flutter.versionCode') ?: '1'
+
+def flutterVersionName =
+        localProperties.getProperty('flutter.versionName') ?: '1.0'
+
+// =============================================================================
+// ANDROID
+// =============================================================================
 
 android {
 
     namespace "com.corexmessenger.chat"
 
     compileSdk 35
-    ndkVersion "27.0.12077973"
 
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging = false
-        }
-    }
+    buildToolsVersion "35.0.0"
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-        coreLibraryDesugaringEnabled true
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
-    }
+    ndkVersion "26.1.10909125"
 
     defaultConfig {
 
         applicationId "com.corexmessenger.chat"
 
         minSdk 24
+
         targetSdk 35
 
         versionCode flutterVersionCode.toInteger()
+
         versionName flutterVersionName
 
         multiDexEnabled true
-    }
 
-    signingConfigs {
-        release {
-            storeFile file(keyProperties['storeFile'])
-            storePassword keyProperties['storePassword']
-            keyAlias keyProperties['keyAlias']
-            keyPassword keyProperties['keyPassword']
+        ndk {
+
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
         }
     }
+
+    // =========================================================================
+    // SIGNING
+    // =========================================================================
+
+    signingConfigs {
+
+        release {
+
+            if (keyProperties['storeFile']) {
+
+                storeFile file(keyProperties['storeFile'])
+
+                storePassword keyProperties['storePassword']
+
+                keyAlias keyProperties['keyAlias']
+
+                keyPassword keyProperties['keyPassword']
+            }
+        }
+    }
+
+    // =========================================================================
+    // BUILD TYPES
+    // =========================================================================
 
     buildTypes {
 
         debug {
+
             minifyEnabled false
             shrinkResources false
         }
 
         release {
+
             signingConfig signingConfigs.release
 
             minifyEnabled false
             shrinkResources false
 
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android.txt'
-            ), 'proguard-rules.pro'
+            proguardFiles(
+
+                    getDefaultProguardFile(
+                            'proguard-android.txt'
+                    ),
+
+                    'proguard-rules.pro'
+            )
         }
     }
+
+    // =========================================================================
+    // JAVA 17
+    // =========================================================================
+
+    compileOptions {
+
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+
+        coreLibraryDesugaringEnabled true
+    }
+
+    // =========================================================================
+    // KOTLIN
+    // =========================================================================
+
+    kotlinOptions {
+
+        jvmTarget = '17'
+    }
+
+    // =========================================================================
+    // SOURCE SETS
+    // =========================================================================
+
     sourceSets {
+
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    // =========================================================================
+    // PACKAGING
+    // =========================================================================
+
+    packagingOptions {
+
+        // ---------------------------------------------------------------------
+        // ANDROID 15 / 16 KB PAGE SIZE SUPPORT
+        // ---------------------------------------------------------------------
+
+        jniLibs {
+
+            useLegacyPackaging = false
+        }
+
+        // ---------------------------------------------------------------------
+        // RESOURCES
+        // ---------------------------------------------------------------------
+
+        resources {
+
+            excludes += [
+
+                    'META-INF/DEPENDENCIES',
+                    'META-INF/LICENSE',
+                    'META-INF/LICENSE.txt',
+                    'META-INF/license.txt',
+                    'META-INF/NOTICE',
+                    'META-INF/NOTICE.txt',
+                    'META-INF/notice.txt',
+                    'META-INF/ASL2.0',
+                    'META-INF/*.kotlin_module'
+            ]
+        }
     }
 }
 
+// =============================================================================
+// FLUTTER
+// =============================================================================
+
 flutter {
+
     source '../..'
 }
 
+// =============================================================================
+// DEPENDENCIES
+// =============================================================================
+
 dependencies {
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+    // Firebase BOM
+    implementation platform(
+            'com.google.firebase:firebase-bom:33.1.2'
+    )
 
-    implementation platform('com.google.firebase:firebase-bom:31.0.0')
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    // MultiDex
+    implementation 'androidx.multidex:multidex:2.0.1'
 
+    // Light Compressor
     implementation 'com.github.AbedElazizShe:LightCompressor:1.3.2'
 
+    // OneSignal
     implementation 'com.onesignal:OneSignal:[5.0.0,5.99.99]'
 
-    implementation 'androidx.multidex:multidex:2.0.1'
+    // Java Desugaring
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
 
+// =============================================================================
+// GOOGLE SERVICES
+// =============================================================================
+
 apply plugin: 'com.google.gms.google-services'
+
+/*
+|--------------------------------------------------------------------------
+| END OF FILE
+|--------------------------------------------------------------------------
+*/

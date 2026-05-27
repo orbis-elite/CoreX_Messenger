@@ -1,43 +1,73 @@
-// ============================================================================
-// COREX MESSENGER - MEDIA SCREEN
-// ============================================================================
-// Professional Refactored Version
-// Optimized for:
-// - Flutter 3.x
-// - Dart 3
-// - Android Gradle Plugin 8+
-// - Java 17
+// =============================================================================
+// CoreX Messenger
+// =============================================================================
 //
-// Features:
-// - Full null safety
-// - Stable rendering
-// - Production ready
-// - Cleaner architecture
-// - Optimized performance
-// - Defensive programming
-// - Better maintainability
-// - Modern Flutter standards
+// Media Screen
 //
-// IMPORTANT:
-// This file intentionally removes deprecated FlutterLinkPreview
-// and unstable WebInfo implementation to prevent build failures.
+// =============================================================================
 //
-// ============================================================================
+// Stable Legacy-Compatible Media Screen
+//
+// Optimized For:
+//
+// ✔ Flutter 3.19.x - 3.24.x
+// ✔ Legacy CoreX Messenger Source
+// ✔ Firebase Compatible
+// ✔ WebRTC Compatible
+// ✔ Codemagic Compatible
+// ✔ Android
+// ✔ iOS
+// ✔ Media Preview
+// ✔ Video Preview
+// ✔ Link Preview
+// ✔ PDF Viewer
+//
+// =============================================================================
+//
+// IMPORTANT NOTES
+//
+// This file intentionally keeps:
+// - lecle_flutter_link_preview
+// - qr_code_scanner
+// - legacy media APIs
+//
+// because the original CoreX Messenger source code depends on them.
+//
+// =============================================================================
 
-// ignore_for_file: deprecated_member_use
-// ignore_for_file: must_be_immutable
-// ignore_for_file: file_names
-// ignore_for_file: avoid_print
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file:
+// deprecated_member_use,
+// must_be_immutable,
+// file_names,
+// avoid_print,
+// non_constant_identifier_names
+
+// =============================================================================
+// DART IMPORTS
+// =============================================================================
 
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:cached_network_image/cached_network_image.dart';
+// =============================================================================
+// FLUTTER IMPORTS
+// =============================================================================
+
 import 'package:flutter/material.dart';
+
+// =============================================================================
+// PACKAGES
+// =============================================================================
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
+import 'package:lecle_flutter_link_preview/lecle_flutter_link_preview.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+
+// =============================================================================
+// COREX IMPORTS
+// =============================================================================
 
 import 'package:corexchat/app.dart';
 
@@ -52,15 +82,25 @@ import 'package:corexchat/src/screens/chat/FileView.dart';
 import 'package:corexchat/src/screens/chat/chatvideo.dart';
 import 'package:corexchat/src/screens/chat/imageView.dart';
 
-// ============================================================================
-// MAIN MEDIA SCREEN
-// ============================================================================
+// =============================================================================
+// MEDIA SCREEN
+// =============================================================================
 
 class Media extends StatefulWidget {
-  final String? peeid;
-  final String? peername;
 
-  const Media({
+  // ---------------------------------------------------------------------------
+  // VARIABLES
+  // ---------------------------------------------------------------------------
+
+  String? peeid;
+
+  String? peername;
+
+  // ---------------------------------------------------------------------------
+  // CONSTRUCTOR
+  // ---------------------------------------------------------------------------
+
+  Media({
     super.key,
     this.peeid,
     this.peername,
@@ -70,515 +110,1024 @@ class Media extends StatefulWidget {
   State<Media> createState() => _MediaState();
 }
 
-// ============================================================================
+// =============================================================================
 // MEDIA STATE
-// ============================================================================
+// =============================================================================
 
 class _MediaState extends State<Media> {
-  final ChatProfileController chatProfileController = Get.find();
 
-  // ==========================================================================
-  // INITIALIZATION
-  // ==========================================================================
+  // ---------------------------------------------------------------------------
+  // CONTROLLER
+  // ---------------------------------------------------------------------------
+
+  final ChatProfileController chatProfileController =
+  Get.find();
+
+  // =============================================================================
+  // INIT STATE
+  // =============================================================================
 
   @override
   void initState() {
+
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _loadProfileData();
-    });
+    initializeProfile();
   }
 
-  // ==========================================================================
-  // LOAD PROFILE DATA
-  // ==========================================================================
+  // =============================================================================
+  // INITIALIZE PROFILE
+  // =============================================================================
 
-  Future<void> _loadProfileData() async {
-    try {
-      final peerId = widget.peeid ?? '';
+  Future<void> initializeProfile() async {
 
-      if (peerId.isNotEmpty) {
-        await chatProfileController.getProfileDATA(peerId);
-      }
-    } catch (e) {
-      log('MEDIA_SCREEN_ERROR: $e');
+    if (
+    widget.peeid != null &&
+        widget.peeid!.isNotEmpty
+    ) {
+
+      WidgetsBinding.instance.addPostFrameCallback(
+
+            (_) async {
+
+          await chatProfileController.getProfileDATA(
+            widget.peeid!,
+          );
+        },
+      );
     }
   }
 
-  // ==========================================================================
-  // MAIN BUILD
-  // ==========================================================================
+  // =============================================================================
+  // BUILD UI
+  // =============================================================================
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
+      // -----------------------------------------------------------------------
+      // BACKGROUND
+      // -----------------------------------------------------------------------
+
       backgroundColor: Colors.grey.shade100,
-      appBar: _buildAppBar(),
-      body: Obx(() {
-        final profile = chatProfileController.profileModel.value;
 
-        if (profile == null) {
-          return _buildLoader();
-        }
+      // -----------------------------------------------------------------------
+      // APP BAR
+      // -----------------------------------------------------------------------
 
-        return SafeArea(
-          child: DefaultTabController(
-            length: 3,
-            child: Column(
+      appBar: AppBar(
+
+        backgroundColor: Colors.grey.shade100,
+
+        elevation: 0,
+
+        automaticallyImplyLeading: false,
+
+        leadingWidth: 50,
+
+        titleSpacing: 0,
+
+        leading: InkWell(
+
+          onTap: () {
+
+            Navigator.pop(context);
+          },
+
+          child: const Icon(
+            Icons.arrow_back_ios,
+            size: 20,
+            color: Colors.black,
+          ),
+        ),
+
+        title: Text(
+
+          capitalizeFirstLetter(
+            widget.peername.toString(),
+          ),
+
+          style: const TextStyle(
+
+            fontWeight: FontWeight.w500,
+
+            fontSize: 18,
+
+            color: chatColor,
+          ),
+        ),
+      ),
+
+      // -----------------------------------------------------------------------
+      // BODY
+      // -----------------------------------------------------------------------
+
+      body: Obx(
+
+            () {
+
+          return SafeArea(
+
+            child: Container(
+
+              color: Colors.transparent,
+
+              height: MediaQuery.of(context).size.height,
+
+              child: DefaultTabController(
+
+                length: 3,
+
+                child: Column(
+
+                  children: <Widget>[
+
+                    // ---------------------------------------------------------
+                    // TOP SPACING
+                    // ---------------------------------------------------------
+
+                    const SizedBox(height: 10),
+
+                    // ---------------------------------------------------------
+                    // TAB BAR
+                    // ---------------------------------------------------------
+
+                    buildTabBar(),
+
+                    // ---------------------------------------------------------
+                    // LOADING
+                    // ---------------------------------------------------------
+
+                    buildBodyContent(),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // =============================================================================
+  // TAB BAR
+  // =============================================================================
+
+  Widget buildTabBar() {
+
+    return Container(
+
+      width: double.maxFinite,
+
+      color: Colors.white,
+
+      child: Center(
+
+        child: TabBar(
+
+          dividerColor: const Color.fromRGBO(
+            236,
+            236,
+            236,
+            1,
+          ),
+
+          indicatorColor: chatownColor,
+
+          unselectedLabelStyle: const TextStyle(
+
+            color: Colors.grey,
+
+            fontWeight: FontWeight.w500,
+
+            fontSize: 15,
+          ),
+
+          labelStyle: TextStyle(
+
+            color: chatownColor,
+
+            fontWeight: FontWeight.w500,
+
+            fontSize: 15,
+          ),
+
+          tabs: [
+
+            Tab(
+              text:
+              '      ${languageController.textTranslate('Media')}        ',
+            ),
+
+            Tab(
+              text:
+              '      ${languageController.textTranslate('Links')}       ',
+            ),
+
+            Tab(
+              text:
+              '      ${languageController.textTranslate('Docs')}        ',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =============================================================================
+  // BODY CONTENT
+  // =============================================================================
+
+  Widget buildBodyContent() {
+
+    final profile =
+        chatProfileController.profileModel.value;
+
+    // -------------------------------------------------------------------------
+    // LOADING
+    // -------------------------------------------------------------------------
+
+    if (
+    chatProfileController.isLoading.value &&
+        profile != null &&
+        profile.mediaData!.isEmpty &&
+        profile.documentData!.isEmpty &&
+        profile.linkData!.isEmpty
+    ) {
+
+      return Center(
+
+        child: Column(
+
+          children: [
+
+            SizedBox(
+              height:
+              MediaQuery.sizeOf(context).height * 0.4,
+            ),
+
+            loader(context),
+          ],
+        ),
+      );
+    }
+
+    // -------------------------------------------------------------------------
+    // EMPTY
+    // -------------------------------------------------------------------------
+
+    if (profile == null) {
+
+      return const SizedBox();
+    }
+
+    // -------------------------------------------------------------------------
+    // TAB VIEW
+    // -------------------------------------------------------------------------
+
+    return Expanded(
+
+      child: TabBarView(
+
+        children: [
+
+          buildMediaTab(),
+
+          buildLinksTab(),
+
+          buildDocsTab(),
+        ],
+      ),
+    );
+  }
+
+  // =============================================================================
+  // MEDIA TAB
+  // =============================================================================
+
+  Widget buildMediaTab() {
+
+    final mediaData =
+    chatProfileController
+        .profileModel
+        .value!
+        .mediaData!;
+
+    if (mediaData.isEmpty) {
+
+      return buildEmptyWidget(
+        "You haven't share any media",
+      );
+    }
+
+    return Padding(
+
+      padding: const EdgeInsets.only(top: 20),
+
+      child: Container(
+
+        width: MediaQuery.of(context).size.width,
+
+        color: Colors.transparent,
+
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+        ),
+
+        child: GridView.builder(
+
+          padding: EdgeInsets.zero,
+
+          shrinkWrap: true,
+
+          physics: const BouncingScrollPhysics(),
+
+          gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(
+
+            crossAxisCount: 3,
+
+            mainAxisExtent: 110,
+
+            mainAxisSpacing: 10,
+          ),
+
+          itemCount: mediaData.length,
+
+          itemBuilder: (context, index) {
+
+            return mediaWidget(
+              mediaData[index],
+              index,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // =============================================================================
+  // LINKS TAB
+  // =============================================================================
+
+  Widget buildLinksTab() {
+
+    final links =
+    chatProfileController
+        .profileModel
+        .value!
+        .linkData!;
+
+    if (links.isEmpty) {
+
+      return buildEmptyWidget(
+        "You haven't share any link with",
+      );
+    }
+
+    return Padding(
+
+      padding: const EdgeInsets.only(top: 20),
+
+      child: ListView.builder(
+
+        padding: EdgeInsets.zero,
+
+        itemCount: links.length,
+
+        itemBuilder: (context, index) {
+
+          return linkWidget(
+            links[index],
+            index,
+          );
+        },
+      ),
+    );
+  }
+
+  // =============================================================================
+  // DOCS TAB
+  // =============================================================================
+
+  Widget buildDocsTab() {
+
+    final docs =
+    chatProfileController
+        .profileModel
+        .value!
+        .documentData!;
+
+    if (docs.isEmpty) {
+
+      return buildEmptyWidget(
+        "You haven't share any doc with",
+      );
+    }
+
+    return Padding(
+
+      padding: const EdgeInsets.only(top: 20),
+
+      child: ListView.builder(
+
+        padding: EdgeInsets.zero,
+
+        itemCount: docs.length,
+
+        itemBuilder: (context, index) {
+
+          return docsWidget(
+            docs[index],
+            index,
+          );
+        },
+      ),
+    );
+  }
+
+  // =============================================================================
+  // EMPTY WIDGET
+  // =============================================================================
+
+  Widget buildEmptyWidget(String text) {
+
+    return Center(
+
+      child: Column(
+
+        crossAxisAlignment:
+        CrossAxisAlignment.center,
+
+        children: [
+
+          Container(
+            height:
+            MediaQuery.of(context).size.height * 0.3,
+          ),
+
+          Padding(
+
+            padding:
+            const EdgeInsets.symmetric(horizontal: 15),
+
+            child: Container(
+
+              width:
+              MediaQuery.sizeOf(context).width * 0.90,
+
+              decoration: BoxDecoration(
+
+                color: Colors.grey.shade200,
+
+                borderRadius:
+                BorderRadius.circular(10),
+              ),
+
+              child: Padding(
+
+                padding: const EdgeInsets.all(15),
+
+                child: Text(
+
+                  '$text ${widget.peername}',
+
+                  textAlign: TextAlign.center,
+
+                  maxLines: 1,
+
+                  overflow: TextOverflow.ellipsis,
+
+                  style: const TextStyle(
+
+                    color: chatColor,
+
+                    fontSize: 15,
+
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // =============================================================================
+  // MEDIA WIDGET
+  // =============================================================================
+
+  Widget mediaWidget(
+      MediaData data,
+      int index,
+      ) {
+
+    final isVideo =
+    data.url.toString().contains(".mp4");
+
+    return Padding(
+
+      padding:
+      const EdgeInsets.symmetric(horizontal: 3),
+
+      child: InkWell(
+
+        onTap: () {
+
+          if (isVideo) {
+
+            Navigator.push(
+
+              context,
+
+              MaterialPageRoute(
+
+                builder: (context) => VideoViewFix(
+
+                  username: "",
+
+                  url: data.url!,
+
+                  play: true,
+
+                  mute: false,
+
+                  date: "",
+                ),
+              ),
+            );
+          } else {
+
+            log(data.url!);
+
+            Navigator.push(
+
+              context,
+
+              PageTransition(
+
+                curve: Curves.linear,
+
+                type:
+                PageTransitionType.rightToLeft,
+
+                child: ImageView(
+
+                  image: data.url!,
+
+                  userimg: "",
+                ),
+              ),
+            );
+          }
+        },
+
+        child: Stack(
+
+          alignment: Alignment.center,
+
+          children: [
+
+            Container(
+
+              height: 100,
+
+              width: 100,
+
+              color: Colors.grey.shade200,
+
+              child: ClipRRect(
+
+                child: CachedNetworkImage(
+
+                  imageUrl:
+                  isVideo
+                      ? data.thumbnail!
+                      : data.url!,
+
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            if (isVideo)
+
+              Positioned(
+
+                top: 42,
+
+                child: Image.asset(
+
+                  "assets/images/play1.png",
+
+                  height: 22,
+
+                  color: chatColor,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =============================================================================
+  // LINK WIDGET
+  // =============================================================================
+
+  Widget linkWidget(
+      LinkData data,
+      int index,
+      ) {
+
+    return Padding(
+
+      padding:
+      const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 3,
+      ),
+
+      child: InkWell(
+
+        onTap: () {
+
+          launchURL(data.message!);
+        },
+
+        child: Container(
+
+          decoration: BoxDecoration(
+
+            color: secondaryColor,
+
+            borderRadius:
+            BorderRadius.circular(10),
+
+            border: Border.all(
+
+              width: 1,
+
+              color: const Color(0xffE8E8E8),
+            ),
+          ),
+
+          child: Padding(
+
+            padding: const EdgeInsets.all(5),
+
+            child: FlutterLinkPreview(
+
+              url: data.message!,
+
+              builder: (info) {
+
+                if (info is WebInfo) {
+
+                  return Text(
+                    data.message!,
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                  );
+                }
+
+                return const CircularProgressIndicator();
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =============================================================================
+  // DOCS WIDGET
+  // =============================================================================
+
+  Widget docsWidget(
+      DocumentData data,
+      int index,
+      ) {
+
+    return InkWell(
+
+      onTap: () {
+
+        Navigator.push(
+
+          context,
+
+          PageTransition(
+
+            curve: Curves.linear,
+
+            type:
+            PageTransitionType.rightToLeft,
+
+            child: FileView(
+              file: data.url!,
+            ),
+          ),
+        );
+      },
+
+      child: Padding(
+
+        padding:
+        const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 3,
+        ),
+
+        child: Container(
+
+          padding: const EdgeInsets.all(7),
+
+          decoration: BoxDecoration(
+
+            borderRadius:
+            BorderRadius.circular(10),
+
+            color: secondaryColor,
+          ),
+
+          child: Container(
+
+            height: 58,
+
+            decoration: BoxDecoration(
+
+              borderRadius:
+              BorderRadius.circular(10),
+
+              color: Colors.white,
+            ),
+
+            child: Row(
+
               children: [
-                const SizedBox(height: 10),
 
-                // ============================================================
-                // TAB BAR
-                // ============================================================
+                const SizedBox(width: 10),
 
-                _buildTabBar(),
+                const Image(
 
-                // ============================================================
-                // CONTENT
-                // ============================================================
+                  height: 28,
+
+                  image: AssetImage(
+                    'assets/images/pdf.png',
+                  ),
+                ),
 
                 Expanded(
-                  child: TabBarView(
-                    children: [
-                      _buildMediaTab(profile.mediaData ?? []),
-                      _buildLinksTab(profile.linkData ?? []),
-                      _buildDocsTab(profile.documentData ?? []),
-                    ],
+
+                  child: FutureBuilder<Map<String, dynamic>>(
+
+                    future: getPdfInfo(data.url!),
+
+                    builder: (context, snapshot) {
+
+                      if (
+                      snapshot.connectionState ==
+                          ConnectionState.waiting
+                      ) {
+
+                        return buildPdfLoading(
+                          data,
+                        );
+                      }
+
+                      if (snapshot.hasData) {
+
+                        return buildPdfData(
+                          data,
+                          snapshot.data!,
+                        );
+                      }
+
+                      return const SizedBox();
+                    },
                   ),
                 ),
               ],
             ),
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 
-  // ==========================================================================
-  // APP BAR
-  // ==========================================================================
+  // =============================================================================
+  // PDF LOADING
+  // =============================================================================
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.grey.shade100,
-      automaticallyImplyLeading: false,
-      leading: InkWell(
-        onTap: () {
-          Navigator.pop(context);
+  Widget buildPdfLoading(
+      DocumentData data,
+      ) {
+
+    // -------------------------------------------------------------------------
+    // SAFE FILE NAME
+    // -------------------------------------------------------------------------
+
+    final String safeFileName =
+        extractFilename(data.url ?? '') ??
+            'Unknown File';
+
+    final List<String> fileParts =
+    safeFileName.split("-");
+
+    final String finalFileName =
+    fileParts.isNotEmpty
+        ? fileParts.last
+        : safeFileName;
+
+    return Column(
+
+      mainAxisAlignment:
+      MainAxisAlignment.center,
+
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
+
+      children: [
+
+        Text(
+
+          finalFileName,
+
+          style: const TextStyle(
+
+            color: chatColor,
+
+            fontSize: 14,
+
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+
+        Text(
+
+          languageController.textTranslate(
+            '0 Page - 0 KB',
+          ),
+
+          style: const TextStyle(
+
+            color: Colors.grey,
+
+            fontSize: 10,
+
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    ).paddingOnly(left: 12);
+  }
+
+  // =============================================================================
+  // PDF DATA
+  // =============================================================================
+
+  Widget buildPdfData(
+      DocumentData data,
+      Map<String, dynamic> pdfData,
+      ) {
+
+    // -------------------------------------------------------------------------
+    // PDF INFO
+    // -------------------------------------------------------------------------
+
+    final int pageCount =
+        pdfData['pageCount'] ?? 0;
+
+    final String fileSize =
+        pdfData['fileSize'] ?? '0 KB';
+
+    // -------------------------------------------------------------------------
+    // SAFE FILE NAME
+    // -------------------------------------------------------------------------
+
+    final String safeFileName =
+        extractFilename(data.url ?? '') ??
+            'Unknown File';
+
+    final List<String> fileParts =
+    safeFileName.split("-");
+
+    final String finalFileName =
+    fileParts.isNotEmpty
+        ? fileParts.last
+        : safeFileName;
+
+    return Column(
+
+      mainAxisAlignment:
+      MainAxisAlignment.center,
+
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
+
+      children: [
+
+        Text(
+
+          finalFileName,
+
+          style: const TextStyle(
+
+            color: chatColor,
+
+            fontSize: 14,
+
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+
+        Text(
+
+          '$pageCount Page - $fileSize',
+
+          style: const TextStyle(
+
+            color: Colors.grey,
+
+            fontSize: 10,
+
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    ).paddingOnly(left: 12);
+  }
+
+  // =============================================================================
+  // URL WIDGET
+  // =============================================================================
+
+  Widget getUrlWidget(String url) {
+
+    if (url.endsWith('.mp4')) {
+
+      return FutureBuilder<Uint8List?>(
+
+        future: getThumbnail(url),
+
+        builder: (context, snapshot) {
+
+          if (
+          snapshot.connectionState ==
+              ConnectionState.done &&
+              snapshot.hasData
+          ) {
+
+            return Image.memory(
+
+              snapshot.data!,
+
+              fit: BoxFit.fill,
+            );
+          }
+
+          return Container();
         },
-        child: const Icon(
-          Icons.arrow_back_ios,
-          size: 20,
-          color: Colors.black,
-        ),
-      ),
-      title: Text(
-        capitalizeFirstLetter(widget.peername ?? ''),
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 18,
-          color: chatColor,
-        ),
-      ),
-    );
-  }
-
-  // ==========================================================================
-  // TAB BAR
-  // ==========================================================================
-
-  Widget _buildTabBar() {
-    return Container(
-      color: Colors.white,
-      child: TabBar(
-        indicatorColor: chatownColor,
-        dividerColor: const Color.fromRGBO(236, 236, 236, 1),
-
-        labelStyle: TextStyle(
-          color: chatownColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 15,
-        ),
-
-        unselectedLabelStyle: const TextStyle(
-          color: Colors.grey,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
-
-        tabs: [
-          Tab(
-            text:
-            "      ${languageController.textTranslate('Media')}      ",
-          ),
-          Tab(
-            text:
-            "      ${languageController.textTranslate('Links')}      ",
-          ),
-          Tab(
-            text:
-            "      ${languageController.textTranslate('Docs')}      ",
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ==========================================================================
-  // LOADER
-  // ==========================================================================
-
-  Widget _buildLoader() {
-    return Center(
-      child: loader(context),
-    );
-  }
-
-  // ==========================================================================
-  // EMPTY STATE
-  // ==========================================================================
-
-  Widget _buildEmptyState(String title) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: chatColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ==========================================================================
-  // MEDIA TAB
-  // ==========================================================================
-
-  Widget _buildMediaTab(List<MediaData> mediaList) {
-    if (mediaList.isEmpty) {
-      return _buildEmptyState(
-        "${languageController.textTranslate("You haven't share any media")} ${widget.peername}",
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: GridView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: mediaList.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          mainAxisExtent: 110,
-        ),
-        itemBuilder: (context, index) {
-          return _buildMediaItem(mediaList[index]);
-        },
-      ),
+    return CachedNetworkImage(
+
+      imageUrl: url,
+
+      fit: BoxFit.fill,
     );
   }
 
-  // ==========================================================================
-  // MEDIA ITEM
-  // ==========================================================================
+  // =============================================================================
+  // GET VIDEO THUMBNAIL
+  // =============================================================================
 
-  Widget _buildMediaItem(MediaData data) {
-    final url = data.url ?? '';
+  Future<Uint8List?> getThumbnail(
+      String videoUrl,
+      ) async {
 
-    final isVideo =
-        url.toLowerCase().contains('.mp4') ||
-            url.toLowerCase().contains('.mov');
+    return await VideoThumbnail.thumbnailData(
 
-    return InkWell(
-      onTap: () {
-        if (isVideo) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => VideoViewFix(
-                username: '',
-                url: url,
-                play: true,
-                mute: false,
-                date: '',
-              ),
-            ),
-          );
-        } else {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: ImageView(
-                image: url,
-                userimg: '',
-              ),
-            ),
-          );
-        }
-      },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            height: 110,
-            width: 110,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Colors.grey.shade200,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: CachedNetworkImage(
-                imageUrl: isVideo
-                    ? (data.thumbnail ?? '')
-                    : url,
-                fit: BoxFit.cover,
-                errorWidget: (_, __, ___) {
-                  return const Icon(Icons.broken_image);
-                },
-              ),
-            ),
-          ),
+      video: videoUrl,
 
-          if (isVideo)
-            const Icon(
-              Icons.play_circle_fill_rounded,
-              size: 38,
-              color: Colors.white,
-            ),
-        ],
-      ),
+      imageFormat: ImageFormat.JPEG,
+
+      quality: 100,
+
+      maxHeight: 100,
+
+      maxWidth: 100,
     );
-  }
-
-  // ==========================================================================
-  // LINKS TAB
-  // ==========================================================================
-
-  Widget _buildLinksTab(List<LinkData> links) {
-    if (links.isEmpty) {
-      return _buildEmptyState(
-        "${languageController.textTranslate("You haven't share any link with")} ${widget.peername}",
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(15),
-      itemCount: links.length,
-      itemBuilder: (context, index) {
-        return _buildLinkItem(links[index]);
-      },
-    );
-  }
-
-  // ==========================================================================
-  // LINK ITEM
-  // ==========================================================================
-
-  Widget _buildLinkItem(LinkData data) {
-    final message = data.message ?? '';
-
-    return InkWell(
-      onTap: () {
-        launchURL(message);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: const Color(0xffE8E8E8),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.link_rounded,
-              color: linkColor,
-            ),
-
-            const SizedBox(width: 12),
-
-            Expanded(
-              child: Text(
-                message,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: linkColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ==========================================================================
-  // DOCS TAB
-  // ==========================================================================
-
-  Widget _buildDocsTab(List<DocumentData> docs) {
-    if (docs.isEmpty) {
-      return _buildEmptyState(
-        "${languageController.textTranslate("You haven't share any doc with")} ${widget.peername}",
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(15),
-      itemCount: docs.length,
-      itemBuilder: (context, index) {
-        return _buildDocItem(docs[index]);
-      },
-    );
-  }
-
-  // ==========================================================================
-  // DOC ITEM
-  // ==========================================================================
-
-  Widget _buildDocItem(DocumentData data) {
-    final url = data.url ?? '';
-
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: FileView(file: url),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            const Image(
-              image: AssetImage('assets/images/pdf.png'),
-              height: 34,
-            ),
-
-            const SizedBox(width: 12),
-
-            Expanded(
-              child: FutureBuilder<Map<String, dynamic>>(
-                future: getPdfInfo(url),
-                builder: (context, snapshot) {
-                  final fileName = extractFilename(url)
-                      .toString()
-                      .split("-")
-                      .last;
-
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          fileName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        const Text(
-                          'Loading...',
-                          style: TextStyle(fontSize: 11),
-                        ),
-                      ],
-                    );
-                  }
-
-                  if (!snapshot.hasData) {
-                    return Text(fileName);
-                  }
-
-                  final pageCount =
-                  snapshot.data!['pageCount'];
-
-                  final fileSize =
-                  snapshot.data!['fileSize'];
-
-                  return Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        fileName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      Text(
-                        '$pageCount Page • $fileSize',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ==========================================================================
-  // VIDEO THUMBNAIL
-  // ==========================================================================
-
-  Future<Uint8List?> getThumbnail(String videoUrl) async {
-    try {
-      return await VideoThumbnail.thumbnailData(
-        video: videoUrl,
-        imageFormat: ImageFormat.JPEG,
-        quality: 100,
-        maxHeight: 100,
-        maxWidth: 100,
-      );
-    } catch (e) {
-      log('THUMBNAIL_ERROR: $e');
-      return null;
-    }
   }
 }
+
+// =============================================================================
+// END OF FILE
+// =============================================================================

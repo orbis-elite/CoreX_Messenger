@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 # CoreX Messenger
 
-A new Flutter chat application project.
+Global Connections. Seamless Communications.
 
 ## Getting Started
 
@@ -34,12 +34,12 @@ This project is built with Flutter 3.27.1 and uses the decal_dev branch for deve
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/whoxa_chat.git
+   git clone https://github.com/your-username/CoreX_Messenger.git
    ```
 
 2. Switch to the decal_dev branch:
    ```
-   cd whoxa_chat
+   cd CoreX_Messenger
    git checkout decal_dev
    ```
 
@@ -61,7 +61,7 @@ This project is built with Flutter 3.27.1 and uses the decal_dev branch for deve
 
 ## Notes for deval_dev Branch
 
-The decal_dev branch contains custom UI components and themes specific to the WhoxaChat design system. Always ensure you're using Flutter 3.27.1 for compatibility with this branch.
+The decal_dev branch contains custom UI components and themes specific to the CoreX Messenger design system. Always ensure you're using Flutter 3.27.1 for compatibility with this branch.
 =======
 # CoreX_Messenger
 >>>>>>> e8073a97d8627c2a0dcbacd6ca472a7d76eca00d

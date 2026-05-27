@@ -1,99 +1,303 @@
-# Uncomment this line to define a global platform for your project
+# =============================================================================
+# CoreX Messenger
+# =============================================================================
+#
+# iOS Podfile Configuration
+#
+# =============================================================================
+#
+# Stable Legacy-Compatible iOS Configuration
+#
+# =============================================================================
+#
+# Optimized For:
+#
+# ✔ Flutter 3.24.x
+# ✔ Dart 3.5.x
+# ✔ iOS 14+
+# ✔ Xcode 14+
+# ✔ CocoaPods
+# ✔ Firebase
+# ✔ OneSignal
+# ✔ WebRTC
+# ✔ Permission Handler
+# ✔ Codemagic CI/CD
+# ✔ App Store IPA Build
+# ✔ Legacy Flutter Plugins
+#
+# =============================================================================
+#
+# IMPORTANT NOTES
+#
+# This Podfile intentionally keeps:
+#
+# ✔ use_frameworks!
+# ✔ use_modular_headers!
+# ✔ iOS 14 deployment target
+#
+# because CoreX Messenger still depends on:
+#
+# - Firebase legacy integrations
+# - WebRTC native frameworks
+# - OneSignal iOS SDK
+# - Older Flutter plugins
+#
+# =============================================================================
+#
+# DO NOT randomly:
+#
+# ✘ remove use_frameworks!
+# ✘ downgrade iOS platform
+# ✘ aggressively update pods
+#
+# unless ALL plugins are fully migrated first.
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Global iOS Platform
+# -----------------------------------------------------------------------------
+
 platform :ios, '14.0'
 
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+# -----------------------------------------------------------------------------
+# CocoaPods Analytics
+# -----------------------------------------------------------------------------
+#
+# Disabling analytics improves Flutter build speed.
+#
+# -----------------------------------------------------------------------------
+
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
+# -----------------------------------------------------------------------------
+# Swift Version
+# -----------------------------------------------------------------------------
+
+ENV['SWIFT_VERSION'] = '5.0'
+
+# -----------------------------------------------------------------------------
+# Xcode Project Configuration
+# -----------------------------------------------------------------------------
+
 project 'Runner', {
+
   'Debug' => :debug,
+
   'Profile' => :release,
+
   'Release' => :release,
 }
 
+# =============================================================================
+# Flutter Root Resolver
+# =============================================================================
+
 def flutter_root
-  generated_xcode_build_settings_path = File.expand_path(
-    File.join('..', 'Flutter', 'Generated.xcconfig'),
-    __FILE__
-  )
+
+  generated_xcode_build_settings_path =
+      File.expand_path(
+
+          File.join(
+              '..',
+              'Flutter',
+              'Generated.xcconfig'
+          ),
+
+          __FILE__
+      )
 
   unless File.exist?(generated_xcode_build_settings_path)
-    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+
+    raise(
+        "#{generated_xcode_build_settings_path} must exist.\n" \
+        "If you're running pod install manually,\n" \
+        "make sure flutter pub get is executed first."
+    )
   end
 
   File.foreach(generated_xcode_build_settings_path) do |line|
+
     matches = line.match(/FLUTTER_ROOT\=(.*)/)
+
     return matches[1].strip if matches
   end
 
-  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+  raise(
+      "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}.\n" \
+      "Try deleting Generated.xcconfig,\n" \
+      "then run flutter pub get."
+  )
 end
 
+# =============================================================================
+# Flutter Pod Helper
+# =============================================================================
+
 require File.expand_path(
-  File.join('packages', 'flutter_tools', 'bin', 'podhelper'),
-  flutter_root
+
+    File.join(
+        'packages',
+        'flutter_tools',
+        'bin',
+        'podhelper'
+    ),
+
+    flutter_root
 )
 
 flutter_ios_podfile_setup
 
+# =============================================================================
+# Runner Target
+# =============================================================================
+
 target 'Runner' do
+
+  # ---------------------------------------------------------------------------
+  # Framework Support
+  # ---------------------------------------------------------------------------
+
   use_frameworks!
+
   use_modular_headers!
 
-  pod 'SDWebImage', '5.17.0'
+  # ---------------------------------------------------------------------------
+  # Flutter Pods
+  # ---------------------------------------------------------------------------
 
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  flutter_install_all_ios_pods(
+      File.dirname(File.realpath(__FILE__))
+  )
+
+  # ---------------------------------------------------------------------------
+  # Runner Tests
+  # ---------------------------------------------------------------------------
 
   target 'RunnerTests' do
+
     inherit! :search_paths
   end
 end
 
+# =============================================================================
+# Post Install Configuration
+# =============================================================================
+
 post_install do |installer|
+
   installer.pods_project.targets.each do |target|
+
     flutter_additional_ios_build_settings(target)
+
+    # -------------------------------------------------------------------------
+    # Build Configurations
+    # -------------------------------------------------------------------------
 
     target.build_configurations.each do |config|
 
-      # Fix older Xcode/macOS compatibility
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
-      config.build_settings['SWIFT_VERSION'] = '5.0'
+      # -----------------------------------------------------------------------
+      # iOS Deployment Target
+      # -----------------------------------------------------------------------
 
-      # Add permission handler configuration here
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+      config.build_settings[
+          'IPHONEOS_DEPLOYMENT_TARGET'
+      ] = '14.0'
+
+      # -----------------------------------------------------------------------
+      # Swift Version
+      # -----------------------------------------------------------------------
+
+      config.build_settings[
+          'SWIFT_VERSION'
+      ] = '5.0'
+
+      # -----------------------------------------------------------------------
+      # Active Architecture
+      # -----------------------------------------------------------------------
+
+      config.build_settings[
+          'ONLY_ACTIVE_ARCH'
+      ] = 'NO'
+
+      # -----------------------------------------------------------------------
+      # Build Distribution
+      # -----------------------------------------------------------------------
+
+      config.build_settings[
+          'BUILD_LIBRARY_FOR_DISTRIBUTION'
+      ] = 'YES'
+
+      # -----------------------------------------------------------------------
+      # Excluded Architectures
+      # -----------------------------------------------------------------------
+      #
+      # Helps older Intel Macs & Codemagic stability.
+      #
+      # -----------------------------------------------------------------------
+
+      config.build_settings[
+          "EXCLUDED_ARCHS[sdk=iphonesimulator*]"
+      ] = "i386"
+
+      # -----------------------------------------------------------------------
+      # Permission Handler Macros
+      # -----------------------------------------------------------------------
+
+      config.build_settings[
+          'GCC_PREPROCESSOR_DEFINITIONS'
+      ] ||= [
+
         '$(inherited)',
 
-        ## dart: PermissionGroup.contacts
+        # ---------------------------------------------------------------------
+        # Contacts
+        # ---------------------------------------------------------------------
+
         'PERMISSION_CONTACTS=1',
 
-        ## dart: PermissionGroup.camera
+        # ---------------------------------------------------------------------
+        # Camera
+        # ---------------------------------------------------------------------
+
         'PERMISSION_CAMERA=1',
 
-        ## dart: PermissionGroup.microphone
+        # ---------------------------------------------------------------------
+        # Microphone
+        # ---------------------------------------------------------------------
+
         'PERMISSION_MICROPHONE=1',
 
-        ## dart: PermissionGroup.photos
+        # ---------------------------------------------------------------------
+        # Photos
+        # ---------------------------------------------------------------------
+
         'PERMISSION_PHOTOS=1',
 
-        ## The 'PERMISSION_LOCATION' macro enables the
-        ## `locationWhenInUse` and `locationAlways` permission.
-        ##
-        ## If the application only requires `locationWhenInUse`,
-        ## only specify the `PERMISSION_LOCATION_WHENINUSE` macro.
-        ##
-        ## dart:
-        ## [PermissionGroup.location,
-        ## PermissionGroup.locationAlways,
-        ## PermissionGroup.locationWhenInUse]
+        # ---------------------------------------------------------------------
+        # Location
+        # ---------------------------------------------------------------------
 
         'PERMISSION_LOCATION=1',
+
         'PERMISSION_LOCATION_WHENINUSE=0',
 
-        ## dart: PermissionGroup.notification
+        # ---------------------------------------------------------------------
+        # Notifications
+        # ---------------------------------------------------------------------
+
         'PERMISSION_NOTIFICATIONS=1',
 
-        ## dart: PermissionGroup.mediaLibrary
+        # ---------------------------------------------------------------------
+        # Media Library
+        # ---------------------------------------------------------------------
+
         'PERMISSION_MEDIA_LIBRARY=1',
       ]
     end
   end
 end
+
+# =============================================================================
+# END OF FILE
+# =============================================================================

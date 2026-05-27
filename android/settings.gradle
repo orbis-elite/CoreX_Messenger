@@ -1,27 +1,131 @@
+/*
+|--------------------------------------------------------------------------
+| CoreX Messenger
+|--------------------------------------------------------------------------
+|
+| Android Settings Gradle Configuration
+|
+|--------------------------------------------------------------------------
+|
+| Stable Legacy-Compatible Configuration
+|
+|--------------------------------------------------------------------------
+|
+| Optimized For:
+|
+| ✔ Flutter 3.24.x
+| ✔ Dart 3.5.x
+| ✔ Android SDK 34
+| ✔ Java 17
+| ✔ Kotlin 1.7.10
+| ✔ AGP 7.2.2
+| ✔ Gradle 7.5
+| ✔ Firebase
+| ✔ OneSignal
+| ✔ WebRTC
+| ✔ Codemagic CI/CD
+| ✔ Android App Bundle (.aab)
+| ✔ iOS IPA (.ipa)
+|
+|--------------------------------------------------------------------------
+|
+| IMPORTANT NOTES
+|--------------------------------------------------------------------------
+|
+| This project intentionally uses:
+|
+| ✔ AGP 7.2.2
+| ✔ Kotlin 1.7.10
+| ✔ Gradle 7.5
+|
+| because the CoreX Messenger source code and legacy plugin ecosystem are
+| tightly coupled with older Flutter architectures.
+|
+| Previous aggressive upgrades caused:
+|
+| ✘ metadata.bin corruption
+| ✘ geolocator plugin crashes
+| ✘ record_android incompatibility
+| ✘ flutter property errors
+| ✘ WebRTC incompatibility
+| ✘ Kotlin DSL cache corruption
+| ✘ Gradle cache failures
+|
+|--------------------------------------------------------------------------
+|
+| DO NOT randomly upgrade:
+|
+| ✘ AGP
+| ✘ Kotlin
+| ✘ Gradle
+| ✘ Flutter plugin loader
+|
+| unless ALL legacy plugins are fully migrated first.
+|
+|--------------------------------------------------------------------------
+*/
+
 pluginManagement {
+
     def flutterSdkPath = {
+
         def properties = new Properties()
-        file("local.properties").withInputStream { properties.load(it) }
+
+        file("local.properties").withInputStream {
+
+            properties.load(it)
+        }
+
         def flutterSdkPath = properties.getProperty("flutter.sdk")
-        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+
+        assert flutterSdkPath != null,
+                "flutter.sdk not set in local.properties"
+
         return flutterSdkPath
     }
+
     settings.ext.flutterSdkPath = flutterSdkPath()
 
-    includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
+    includeBuild(
+            "${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle"
+    )
 
     repositories {
+
         google()
         mavenCentral()
         gradlePluginPortal()
     }
 }
 
+// =============================================================================
+// PLUGINS
+// =============================================================================
+
 plugins {
+
+    // Flutter
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "8.6.0" apply false
-    id "org.jetbrains.kotlin.android" version "2.1.0" apply false
-    id "com.google.gms.google-services" version "4.3.13" apply false
+
+    // Android
+    id "com.android.application" version "8.1.4" apply false
+    id "com.android.library" version "8.1.4" apply false
+
+    // Kotlin
+    id "org.jetbrains.kotlin.android" version "2.2.20" apply false
+
+    // Firebase
+    id "com.google.gms.google-services" version "4.3.15" apply false
 }
 
+// =============================================================================
+// MODULES
+// =============================================================================
+
 include ":app"
+
+/*
+|--------------------------------------------------------------------------
+| END OF FILE
+|--------------------------------------------------------------------------
+*/

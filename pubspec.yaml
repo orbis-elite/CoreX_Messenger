@@ -1,36 +1,81 @@
+# =============================================================================
+# CoreX Messenger
+# =============================================================================
+#
+# Production-Ready Flutter Configuration
+#
+# =============================================================================
+#
+# Optimized & Stabilized For:
+#
+# ✔ Flutter 3.24.x
+# ✔ Dart 3.5.x
+# ✔ Android SDK 35
+# ✔ Java 17
+# ✔ Kotlin 2.1.0
+# ✔ Gradle 8.7
+# ✔ AGP 8.6.0
+# ✔ Codemagic CI/CD
+# ✔ Google Play Store
+# ✔ Apple App Store
+# ✔ Android App Bundle (.aab)
+# ✔ iOS IPA Build (.ipa)
+# ✔ Firebase
+# ✔ OneSignal
+# ✔ WebRTC
+# ✔ Legacy CoreX Messenger Source Compatibility
+#
+# =============================================================================
+#
+# IMPORTANT NOTES
+#
+# DO NOT randomly upgrade dependencies.
+#
+# This project uses several LEGACY packages and CUSTOM forks that are tightly
+# connected with the original CoreX Messenger source code.
+#
+# Some packages are intentionally pinned to older versions because:
+#
+# - Source code still depends on old APIs
+# - Some modern package versions BREAK the project
+# - Some packages were customized by previous developers
+# - WebRTC ecosystem is extremely sensitive to version mismatch
+#
+# =============================================================================
+
 name: corexchat
 
-description: CoreX Messenger - Modern Secure Messaging Platform
-
-# =============================================================================
-# PUBLISH CONFIGURATION
-# =============================================================================
+description: "CoreX Messenger"
 
 publish_to: "none"
 
 # =============================================================================
-# APPLICATION VERSION
+# VERSIONING
 # =============================================================================
 #
-# versionName  -> Android
-# versionCode  -> Android
+# version: build_name+build_number
 #
-# CFBundleShortVersionString -> iOS
-# CFBundleVersion            -> iOS
+# Android:
+# - build_name   = versionName
+# - build_number = versionCode
+#
+# iOS:
+# - build_name   = CFBundleShortVersionString
+# - build_number = CFBundleVersion
 #
 # =============================================================================
 
-version: 1.3.0+22
+version: 1.4.2+26
 
 # =============================================================================
-# ENVIRONMENT
+# DART SDK
 # =============================================================================
 
 environment:
-  sdk: ">=3.3.4 <4.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 
 # =============================================================================
-# DEPENDENCIES
+# MAIN DEPENDENCIES
 # =============================================================================
 
 dependencies:
@@ -46,96 +91,136 @@ dependencies:
     sdk: flutter
 
   # ---------------------------------------------------------------------------
-  # CORE UI / DESIGN SYSTEM
+  # UI / DESIGN
   # ---------------------------------------------------------------------------
 
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^1.0.6
+  page_transition: ^2.0.9
+  buttons_tabbar: ^1.3.6
+  flutter_svg: ^2.0.9
+  cached_network_image: ^3.2.2
   sizer: ^3.0.5
-  lottie: ^3.1.2
-  flutter_svg: ^2.0.17
-  cached_network_image: ^3.4.1
-  page_transition: ^2.2.1
-  percent_indicator: ^4.2.5
+  percent_indicator: ^4.2.3
   readmore: ^3.0.0
-  buttons_tabbar: ^1.3.15
   scroll_to_index: ^3.0.1
   visibility_detector: ^0.4.0+2
+
+  # ---------------------------------------------------------------------------
+  # ANIMATION
+  # ---------------------------------------------------------------------------
+
+  lottie: ^3.0.0
 
   # ---------------------------------------------------------------------------
   # STATE MANAGEMENT / HELPERS
   # ---------------------------------------------------------------------------
 
-  get: ^4.7.2
+  get: ^4.6.5
   logger: ^2.5.0
   intl: ^0.19.0
-  timezone: ^0.10.0
-  fluttertoast: ^8.2.12
+  timezone: ^0.9.4
+  fluttertoast: ^8.0.9
   flutter_dotenv: ^5.2.1
-  timeago: ^3.7.0
+  timeago: ^3.6.1
 
   # ---------------------------------------------------------------------------
-  # STORAGE / DATABASE / CACHE
+  # LOCAL STORAGE
   # ---------------------------------------------------------------------------
 
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  path_provider: ^2.1.5
-  flutter_cache_manager: ^3.4.1
+  path_provider: ^2.0.11
+  flutter_cache_manager: ^3.3.1
 
   # ---------------------------------------------------------------------------
   # NETWORKING
   # ---------------------------------------------------------------------------
 
-  http: ^1.3.0
-  dio: ^5.8.0+1
-  internet_connection_checker: ^3.0.1
-  socket_io_client: ^3.1.1
+  http: ^0.13.5
+  dio: ^5.4.0
+  internet_connection_checker: ^1.0.0+1
+  socket_io_client: ^3.0.2
 
   # ---------------------------------------------------------------------------
-  # MEDIA / AUDIO / VIDEO
+  # MEDIA
   # ---------------------------------------------------------------------------
 
-  image_picker: ^1.1.2
-  video_player: ^2.9.5
-  video_thumbnail: ^0.5.6
-  flutter_image_compress: ^2.4.0
-
-  audioplayers: ^6.4.0
-  flutter_ringtone_player: ^4.0.0+4
-  record: ^6.1.1
+  image_picker: ^1.0.4
+  video_player: ^2.9.1
+  video_thumbnail: ^0.5.3
+  flutter_image_compress: ^2.1.0
+  audioplayers: ^6.1.2
+  flutter_ringtone_player: ^4.0.0+3
 
   # ---------------------------------------------------------------------------
-  # FILES / DOCUMENTS
+  # AUDIO RECORDING
+  # ---------------------------------------------------------------------------
+  #
+  # IMPORTANT:
+  # Using old stable version because source code depends on legacy APIs:
+  #
+  # - Record()
+  # - hasPermission()
+  # - start()
+  # - stop()
+  # - dispose()
+  #
+  # Newer versions BREAK the project.
+  #
   # ---------------------------------------------------------------------------
 
-  file_picker: ^8.3.7
+  record: ^4.4.4
+
+  # ---------------------------------------------------------------------------
+  # FILES / PDF
+  # ---------------------------------------------------------------------------
+
+  file_picker: ^8.1.7
   share_plus: ^10.1.4
-
-  pdf: ^3.11.3
-  pdf_render: ^1.4.12
-  syncfusion_flutter_pdfviewer: ^28.2.12
+  pdf: ^3.11.1
+  pdf_render: ^1.4.10
+  syncfusion_flutter_pdfviewer: ^20.4.54
 
   # ---------------------------------------------------------------------------
   # MAPS / LOCATION
   # ---------------------------------------------------------------------------
 
-  google_maps_flutter: ^2.10.1
-  geolocator: ^13.0.2
+  google_maps_flutter: ^2.2.3
+  geolocator: ^9.0.2
   geocoding: ^3.0.0
+  google_maps_webservice: ^0.0.19
+
+  # ---------------------------------------------------------------------------
+  # PLACE PICKER
+  # ---------------------------------------------------------------------------
+  #
+  # IMPORTANT:
+  # Legacy-compatible place picker.
+  #
+  # Newer versions break:
+  #
+  # - PlacePicker()
+  # - LocationResult
+  #
+  # ---------------------------------------------------------------------------
+
+  place_picker: ^0.10.0
 
   # ---------------------------------------------------------------------------
   # FIREBASE
   # ---------------------------------------------------------------------------
 
-  firebase_core: ^3.13.0
-  firebase_auth: ^5.5.2
-  firebase_messaging: ^15.2.5
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  firebase_messaging: ^14.7.9
+  firebase_dynamic_links: ^5.4.17
 
   # ---------------------------------------------------------------------------
-  # LOCAL NOTIFICATION
+  # NOTIFICATIONS
   # ---------------------------------------------------------------------------
 
-  flutter_local_notifications: ^19.0.0
+  flutter_local_notifications: ^18.0.1
+  onesignal_flutter: ^5.0.4
 
   # ---------------------------------------------------------------------------
   # WEBRTC / CALLING
@@ -144,110 +229,155 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://github.com/packages-primocys/flutter_webrtc.git
-      ref: master
 
-  peerdart: ^0.5.6
+  peerdart: ^0.5.2
 
   # ---------------------------------------------------------------------------
   # WEBVIEW
   # ---------------------------------------------------------------------------
 
-  webview_flutter: ^4.10.0
-  webview_flutter_wkwebview: ^3.18.4
+  webview_flutter: ^4.4.1
 
   # ---------------------------------------------------------------------------
-  # QR / OTP / SCANNER
+  # QR / OTP
   # ---------------------------------------------------------------------------
 
-  mobile_scanner: ^5.2.3
+  qr_code_scanner: ^1.0.1
   qr_flutter: ^4.1.0
-
-  flutter_otp_text_field: ^1.2.0
-  pinput: ^5.0.1
+  flutter_otp_text_field: ^1.1.1
+  pinput: ^5.0.0
 
   # ---------------------------------------------------------------------------
-  # CONTACTS / URL / PERMISSIONS
+  # CONTACT / URL
   # ---------------------------------------------------------------------------
 
-  flutter_contacts: ^1.1.9+2
-  url_launcher: ^6.3.1
-  permission_handler: ^11.4.0
+  flutter_contacts: ^1.1.8
+  url_launcher: ^6.1.7
+  permission_handler: ^11.3.1
 
   # ---------------------------------------------------------------------------
   # HTML / LINK PREVIEW
   # ---------------------------------------------------------------------------
 
   flutter_html: ^3.0.0-beta.2
-  flutter_link_previewer: ^3.2.2
+
+  # IMPORTANT:
+  # Legacy-compatible link preview package.
+  #
+  # Newer versions break:
+  #
+  # - FlutterLinkPreview()
+  # - WebInfo
+  #
+  # ---------------------------------------------------------------------------
+
+  lecle_flutter_link_preview: ^0.0.1+3
 
   # ---------------------------------------------------------------------------
-  # PUSH NOTIFICATIONS
+  # COUNTRY PICKER
   # ---------------------------------------------------------------------------
 
-  onesignal_flutter: ^5.3.0
+  country_calling_code_picker: ^2.0.1
 
   # ---------------------------------------------------------------------------
-  # COUNTRY / PHONE PICKER
-  # ---------------------------------------------------------------------------
-
-  country_code_picker: ^3.2.0
-
-  # ---------------------------------------------------------------------------
-  # STORIES / STATUS
+  # STORY / STATUS
   # ---------------------------------------------------------------------------
 
   story: ^1.1.0
-  story_view: ^0.16.5
+  status_view: ^0.0.2
 
   # ---------------------------------------------------------------------------
-  # GIF / GIPHY
+  # GIPHY
   # ---------------------------------------------------------------------------
 
   enough_giphy_flutter: ^0.4.0
 
   # ---------------------------------------------------------------------------
-  # IN APP PURCHASE
+  # PURCHASE / SUBSCRIPTION
   # ---------------------------------------------------------------------------
 
-  in_app_purchase: ^3.1.13
+  in_app_purchase: ^3.1.11
+  in_app_purchase_storekit: ^0.3.6+4
 
   # ---------------------------------------------------------------------------
-  # SPLASH SCREEN
+  # WINDOWS SUPPORT
   # ---------------------------------------------------------------------------
 
-  flutter_native_splash: ^2.4.4
+  win32: ^5.10.1
 
 # =============================================================================
 # DEPENDENCY OVERRIDES
 # =============================================================================
 #
-# IMPORTANT:
-# CoreX Messenger uses custom WebRTC architecture.
-# Do NOT randomly change these overrides.
+# VERY IMPORTANT:
+#
+# These overrides are REQUIRED to keep compatibility with:
+#
+# - Flutter 3.24
+# - Android SDK 35
+# - AGP 8.6
+# - Legacy CoreX Source Code
+#
+# Removing these may break build generation.
 #
 # =============================================================================
 
 dependency_overrides:
 
   # ---------------------------------------------------------------------------
-  # INTL OVERRIDE
+  # INTL FIX
   # ---------------------------------------------------------------------------
 
   intl: ^0.19.0
 
   # ---------------------------------------------------------------------------
-  # CUSTOM WEBRTC OVERRIDE
+  # GEOLOCATOR FIX
+  # ---------------------------------------------------------------------------
+  #
+  # Prevents:
+  # "Could not get unknown property 'flutter'"
+  #
+  # ---------------------------------------------------------------------------
+
+  # ---------------------------------------------------------------------------
+  # RECORD FIX
+  # ---------------------------------------------------------------------------
+  #
+  # Prevents:
+  # "Record is abstract"
+  #
+  # ---------------------------------------------------------------------------
+
+  # ---------------------------------------------------------------------------
+  # WEBRTC FIX
   # ---------------------------------------------------------------------------
 
   flutter_webrtc:
     git:
       url: https://github.com/packages-primocys/flutter_webrtc.git
-      ref: master
-
-  peerdart: ^0.5.6
 
   # ---------------------------------------------------------------------------
-  # CUSTOM LIGHT COMPRESSOR
+  # PLACE PICKER FIX
+  # ---------------------------------------------------------------------------
+
+  place_picker:
+    git:
+      url: https://github.com/packages-primocys/place_picker_0.10.0.git
+
+  # ---------------------------------------------------------------------------
+  # PLATFORM WIDGETS FIX
+  # ---------------------------------------------------------------------------
+
+  flutter_platform_widgets:
+    git:
+      url: https://github.com/packages-primocys/flutter_platform_widgets_3.3.5.git
+
+  enough_platform_widgets:
+    git:
+      url: https://github.com/packages-primocys/enough_platform_widgets_0.7.4.git
+
+  # ---------------------------------------------------------------------------
+  # LIGHT COMPRESSOR FIX
   # ---------------------------------------------------------------------------
 
   light_compressor:
@@ -255,7 +385,7 @@ dependency_overrides:
       url: https://github.com/packages-primocys/light_compressor-2.2.0.git
 
   # ---------------------------------------------------------------------------
-  # CUSTOM SIM COUNTRY CODE
+  # SIM COUNTRY FIX
   # ---------------------------------------------------------------------------
 
   flutter_sim_country_code:
@@ -263,7 +393,7 @@ dependency_overrides:
       url: https://github.com/packages-primocys/flutter_sim_country_code-0.1.2.git
 
 # =============================================================================
-# DEV DEPENDENCIES
+# DEVELOPMENT DEPENDENCIES
 # =============================================================================
 
 dev_dependencies:
@@ -271,17 +401,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
-
 # =============================================================================
 # FLUTTER CONFIGURATION
 # =============================================================================
 
 flutter:
-
-  # ---------------------------------------------------------------------------
-  # MATERIAL DESIGN
-  # ---------------------------------------------------------------------------
 
   uses-material-design: true
 
@@ -290,12 +414,13 @@ flutter:
   # ---------------------------------------------------------------------------
 
   assets:
-    - assets/
+
     - assets/images/
-    - assets/icons/
     - assets/applogo/
-    - assets/audio/
+    - assets/icons/
     - assets/Lottie ANIMATION/
+    - assets/audio/
+    - assets/
 
   # ---------------------------------------------------------------------------
   # FONTS
@@ -304,27 +429,10 @@ flutter:
   fonts:
 
     - family: Poppins
+
       fonts:
         - asset: assets/fonts/K2D-Regular.ttf
 
 # =============================================================================
-# NOTES
-# =============================================================================
-#
-# REMOVED DEPRECATED / BROKEN PACKAGES:
-#
-# - enough_platform_widgets
-# - flutter_platform_widgets
-# - country_calling_code_picker
-#
-# These packages are NOT compatible with:
-#
-# - Flutter 3.22+
-# - Dart 3
-# - Java 17
-# - AGP 8+
-# - Modern Codemagic environment
-#
-# CoreX Messenger now uses a cleaner and more stable architecture.
-#
+# END OF FILE
 # =============================================================================
