@@ -6242,25 +6242,29 @@ class _GroupChatMsgState extends State<GroupChatMsg> {
     const giphyApiKey = 'M74S0wxPj9sOl30judPKMjTU6GkmmjpC';
 
     final gif = await GiphyGet.getGif(
-        context: context,
-        apiKey: giphyApiKey,
-        type: GiphyType.gifs,
-        rating: GiphyRating.g,
-        lang: GiphyLanguage.english,
-        keepState: true,
-        showPreview: true,
-        searchHintText: "search",
-        usePlatformBottomSheet: true,
-        gridSpacing: 4.0,
-        crossAxisCount: 2);
+      context: context,
+      apiKey: giphyApiKey,
+      tabColor: Colors.blue,
+      debounceTimeInMilliseconds: 350,
+      showGIFs: true,
+      showStickers: false,
+      showEmojis: false,
+    );
 
     if (gif != null) {
       chatContorller.isSendMsg.value = true;
-      setState(() {
-        downloadAndSaveGif(gif.images.original!.url);
-        print("SELECTED_GIF:_${gif.images.original!.url}");
-      });
-      WidgetsBinding.instance.addPostFrameCallback((duration) {});
+
+      final gifUrl = gif.images?.original?.url ?? '';
+
+      if (gifUrl.isNotEmpty) {
+        setState(() {
+          downloadAndSaveGif(gifUrl);
+
+          print("SELECTED_GIF:_$gifUrl");
+        });
+
+        WidgetsBinding.instance.addPostFrameCallback((duration) {});
+      }
     }
   }
 
@@ -6270,15 +6274,33 @@ class _GroupChatMsgState extends State<GroupChatMsg> {
 
       if (response.statusCode == 200) {
         Uint8List bytes = response.bodyBytes;
+
         if (SelectedreplyText == true) {
-          chatContorller.sendMessageGIF(widget.conversationID, 'gif', bytes, '',
-              widget.mobileNum.toString(), '', reply_chatID);
+          chatContorller.sendMessageGIF(
+            widget.conversationID,
+            'gif',
+            bytes,
+            '',
+            widget.mobileNum.toString(),
+            '',
+            reply_chatID,
+          );
+
           SelectedreplyText = false;
+
           listScrollController!
               .jumpTo(listScrollController!.position.minScrollExtent);
         } else {
-          chatContorller.sendMessageGIF(widget.conversationID, 'gif', bytes, '',
-              widget.mobileNum.toString(), '', '');
+          chatContorller.sendMessageGIF(
+            widget.conversationID,
+            'gif',
+            bytes,
+            '',
+            widget.mobileNum.toString(),
+            '',
+            '',
+          );
+
           listScrollController!
               .jumpTo(listScrollController!.position.minScrollExtent);
         }
