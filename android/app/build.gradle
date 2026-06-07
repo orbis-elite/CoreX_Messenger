@@ -69,9 +69,9 @@ android {
 
     namespace "com.corexmessenger.chat"
 
-    compileSdk 35
+    compileSdk 36
 
-    buildToolsVersion "35.0.0"
+    buildToolsVersion "36.0.0"
 
     ndkVersion "26.1.10909125"
 
@@ -233,9 +233,6 @@ dependencies {
             'com.google.firebase:firebase-bom:33.1.2'
     )
 
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     // MultiDex
     implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -248,12 +245,6 @@ dependencies {
     // Java Desugaring
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
-
-// =============================================================================
-// GOOGLE SERVICES
-// =============================================================================
-
-apply plugin: 'com.google.gms.google-services'
 
 /*
 |--------------------------------------------------------------------------

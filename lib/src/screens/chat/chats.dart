@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:ui';
-import 'package:corexchat/src/global/services/greeting_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,10 +47,6 @@ class _ChatsState extends State<Chats> with WidgetsBindingObserver {
     await Permission.camera.request();
 
     await Permission.microphone.request();
-
-    await Permission.storage.request();
-
-    await Permission.photos.request();
 
     await Permission.contacts.request();
   }

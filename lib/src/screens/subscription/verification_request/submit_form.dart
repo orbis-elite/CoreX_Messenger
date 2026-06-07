@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:corexchat/Models/user_profile_model.dart';
 import 'package:corexchat/src/global/payment_success_dialog.dart';
 import 'package:corexchat/src/global/services/greeting_service.dart';
-import 'package:corexchat/src/global/strings.dart';
 import 'package:corexchat/src/screens/layout/bottombar.dart';
 import 'package:corexchat/src/screens/subscription/stpper_widget.dart';
 import 'package:flutter/material.dart';
@@ -191,10 +190,10 @@ class _BadgeRequestUploadScreenState extends State<BadgeRequestUploadScreen> {
       buttonText: 'Done',
       onButtonPressed: () async {
         await GreetingsService.updateUserAfterGreeting();
-        await Future.delayed(Duration(milliseconds: 100)); // let dialog close cleanly
+        await Future.delayed(
+            Duration(milliseconds: 100)); // let dialog close cleanly
         Get.offAll(() => TabbarScreen(currentTab: 0));
       },
-
       useGifCheckmark: logoUrl == null || logoUrl.isEmpty,
       logoUrl: logoUrl,
     );

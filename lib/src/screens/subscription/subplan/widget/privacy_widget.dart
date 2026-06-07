@@ -101,7 +101,7 @@ class PrivacyPolicyTextWithInkWell extends StatelessWidget {
 // PrivacyPolicyText(
 //   onPrivacyPolicyTap: () {
 //     Navigator.push(
-//       context, 
+//       context,
 //       MaterialPageRoute(builder: (context) => PpAndTcScreen(isFromPP: true))
 //     );
 //     // Or with Get: Get.to(() => PpAndTcScreen(isFromPP: true));

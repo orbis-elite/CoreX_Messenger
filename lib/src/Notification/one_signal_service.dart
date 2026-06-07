@@ -3,30 +3,41 @@
 import 'dart:io';
 
 import 'package:corexchat/Models/calls_Model/joined_users_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:corexchat/app.dart';
 import 'package:corexchat/controller/call_controller.dart/get_roomId_controller.dart';
 import 'package:corexchat/controller/user_chatlist_controller.dart';
 import 'package:corexchat/native_controller/audio_native_controller.dart';
-import 'package:corexchat/src/screens/call/web_rtc/audio_call_screen.dart';
 import 'package:corexchat/src/screens/call/web_rtc/incoming_call_screen.dart';
-import 'package:corexchat/src/screens/call/web_rtc/video_call_screen.dart';
-import 'package:corexchat/src/screens/chat/group_chat_temp.dart';
-import 'package:corexchat/src/screens/chat/single_chat.dart';
 import 'package:corexchat/src/screens/layout/bottombar.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
-import '../../native_controller/audio_native_controller.dart';
 
 class OnesignalService {
   final RoomIdController roomIdController = Get.put(RoomIdController());
 
   initialize() {
-    OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+    if (languageController.appSettingsOneSignalData.isEmpty) {
+      if (kDebugMode) {
+        print("OneSignal initialization skipped: app ID is unavailable");
+      }
+      return;
+    }
 
-    OneSignal.initialize(
-        languageController.appSettingsOneSignalData[0].oneSignalAppId!);
+    final appId =
+        languageController.appSettingsOneSignalData.first.oneSignalAppId;
+    if (appId == null || appId.isEmpty) {
+      if (kDebugMode) {
+        print("OneSignal initialization skipped: app ID is empty");
+      }
+      return;
+    }
+
+    OneSignal.Debug.setLogLevel(
+      kDebugMode ? OSLogLevel.verbose : OSLogLevel.none,
+    );
+    OneSignal.initialize(appId);
     // OneSignal.initialize("fa0d2111-1ab5-49d7-ad5d-976b8d9d66a4");
     OneSignal.User.pushSubscription.addObserver((state) {
       print(

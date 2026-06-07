@@ -281,7 +281,7 @@ class StroyGetxController extends GetxController {
       viewedStatusList.value = storyListData.value.viewedStatusList!;
       notViewedStatusList.value = storyListData.value.notViewedStatusList!;
       notViewedStatusList.removeWhere((element) =>
-      element.userData!.userId! == Hive.box(userdata).get(userId));
+          element.userData!.userId! == Hive.box(userdata).get(userId));
       notViewedStatusList.refresh();
       storyListData.refresh();
       allStoryListData = respo.obs;

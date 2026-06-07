@@ -148,18 +148,6 @@ import 'package:http/http.dart' as http;
 //   }
 // }
 
-import 'dart:convert';
-import 'dart:developer';
-import 'package:corexchat/Models/user_profile_model.dart';
-import 'package:corexchat/src/global/api_helper.dart';
-import 'package:corexchat/src/global/payment_success_dialog.dart';
-import 'package:corexchat/src/global/strings.dart';
-import 'package:corexchat/src/screens/layout/bottombar.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:http/http.dart' as http;
-
 class GreetingsService {
   static final ApiHelper _apiHelper = ApiHelper();
 
@@ -256,7 +244,8 @@ class GreetingsService {
 
         // After updating revoke popup status, check if we need to show greetings dialog
         UserProfileModel? updatedProfile = UserProfileModel.fromJson(data);
-        bool shouldShowGreetings = !(updatedProfile.resData?.isgreetings ?? true);
+        bool shouldShowGreetings =
+            !(updatedProfile.resData?.isgreetings ?? true);
 
         if (shouldShowGreetings) {
           // We need to return false here to indicate that we're not done showing dialogs
@@ -320,12 +309,15 @@ class GreetingsService {
 
     if (userProfile.resData?.revocations != null &&
         userProfile.resData!.revocations!.isNotEmpty) {
-      revocationReason = userProfile.resData!.revocations![0].revocationReason ?? "Unknown reason";
+      revocationReason =
+          userProfile.resData!.revocations![0].revocationReason ??
+              "Unknown reason";
     }
 
     context.showFixedBackgroundSuccessDialog(
       title: 'Your tick mark has been removed',
-      message: 'Sorry for the inconvenience, because we were forced to remove your tick mark.\n\nReason: $revocationReason',
+      message:
+          'Sorry for the inconvenience, because we were forced to remove your tick mark.\n\nReason: $revocationReason',
       buttonText: 'Done',
       onButtonPressed: () async {
         // Update revoke popup status before navigating
@@ -364,7 +356,7 @@ class GreetingsService {
       // Gold verification
       title = 'Welcome to the Elite';
       message =
-      'Congratulations on achieving Xclus Verified status. Your profile now bears the mark of true distinction — the Xclus tick. Enjoy the privileges that come with greatness.';
+          'Congratulations on achieving Xclus Verified status. Your profile now bears the mark of true distinction — the Xclus tick. Enjoy the privileges that come with greatness.';
     } else {
       // Blue verification (default)
       title = 'Congratulations';

@@ -173,16 +173,16 @@ class AllStaredMsgController extends GetxController {
 
       await Hive.openBox(userdata);
       log("token: ${Hive.box(userdata).get(authToken)}");
-      
+
       Map<String, dynamic> requestBody = {
         "message_id": int.parse(messageId),
         "report_id": int.parse(reportId),
       };
-      
+
       if (reportText != null && reportText.isNotEmpty) {
         requestBody["report_text"] = reportText;
       }
-      
+
       final responseJson = await apiHelper.postMethod(
         url: apiHelper.reportMessage,
         headers: {

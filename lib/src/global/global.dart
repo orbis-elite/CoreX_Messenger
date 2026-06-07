@@ -68,8 +68,10 @@ Color secondaryColor = const Color(0xFF1E3C72); // Default secondary color
 // Update colors after settings are loaded
 void updateAppColors() {
   if (languageController.appSettingsData.isNotEmpty) {
-    chatownColor = dynamiColor(languageController.appSettingsData[0].appColorPrimary!);
-    secondaryColor = dynamiColor(languageController.appSettingsData[0].appColorSecondary!);
+    chatownColor =
+        dynamiColor(languageController.appSettingsData[0].appColorPrimary!);
+    secondaryColor =
+        dynamiColor(languageController.appSettingsData[0].appColorSecondary!);
   }
 }
 
@@ -139,10 +141,7 @@ closekeyboard() {
 }
 
 List<String> addedBookmarks = [];
-String googleKEY = "AIzaSyDGFi8AlKgBoR8LrLA--Y836vfH4zwfiRU";
 String onchat = "0";
-String serverKey =
-    'AAAAqh1Nstg:APA91bFxv6IjIge1pGr_2qAP9SIqUIpxZ8_0aYS998ZeBfjVux-Mg07cHAMvabyCf3AUiLXNcsLDQ7_4YdYBfRf2bljzOGWZ-ID03EKb3RWNaZNlaOK9zX7kZcngMsex6BwIqlQL9lNH';
 
 // Client client = Client();
 

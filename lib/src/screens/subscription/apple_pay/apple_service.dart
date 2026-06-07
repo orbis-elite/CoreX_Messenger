@@ -2,20 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 // Import your existing services and models
 import 'package:corexchat/src/global/api_helper.dart';
 import 'package:corexchat/src/global/strings.dart';
-import 'package:corexchat/src/global/global.dart';
-import 'package:corexchat/src/screens/subscription/subplan/sub_plan_model.dart';
 
 class ApplePaySubscriptionService {
   static final ApplePaySubscriptionService _instance =
@@ -42,7 +38,7 @@ class ApplePaySubscriptionService {
   List<ProductDetails> _products = [];
   List<PurchaseDetails> _purchases = [];
   Set<String> _processedTransactions = {}; // Track processed transactions
-  
+
   // Debug mode for testing
   bool _debugMode = false;
 
@@ -265,7 +261,9 @@ class ApplePaySubscriptionService {
       PurchaseDetails? existingPendingTransaction;
       try {
         existingPendingTransaction = _purchases.firstWhere(
-          (purchase) => purchase.productID == product.id && purchase.pendingCompletePurchase,
+          (purchase) =>
+              purchase.productID == product.id &&
+              purchase.pendingCompletePurchase,
         );
       } catch (e) {
         // No matching transaction found, which is expected
@@ -273,10 +271,11 @@ class ApplePaySubscriptionService {
       }
 
       if (existingPendingTransaction != null) {
-        print('DEBUG: Found existing pending transaction for ${product.id}, completing it first');
+        print(
+            'DEBUG: Found existing pending transaction for ${product.id}, completing it first');
         await _inAppPurchase.completePurchase(existingPendingTransaction);
         _purchaseTimestamps.remove(product.id);
-        
+
         // Wait a bit before proceeding with new purchase
         await Future.delayed(Duration(milliseconds: 500));
       }
@@ -309,11 +308,12 @@ class ApplePaySubscriptionService {
     } catch (e) {
       _purchasePending = false;
       onPaymentCompleted?.call();
-      
+
       // Check if it's a duplicate product error
       if (e.toString().contains('storekit_duplicate_product_object') ||
           e.toString().contains('pending transaction')) {
-        onError?.call('Purchase error: There is a pending transaction for this product. Please wait for it to complete or try again later.');
+        onError?.call(
+            'Purchase error: There is a pending transaction for this product. Please wait for it to complete or try again later.');
       } else {
         onError?.call('Purchase error: $e');
       }
@@ -467,7 +467,8 @@ class ApplePaySubscriptionService {
         'amount': _planamount,
         // Use Apple Pay transaction details instead of recurring_id and customer_id
         'recurring_id': transactionId, // Apple transaction ID
-        'csutomer_id': purchaseDetails.productID, // Apple product ID (matches backend typo)
+        'csutomer_id': purchaseDetails
+            .productID, // Apple product ID (matches backend typo)
         'subscription_type_id': subscriptionTypeId,
         'duration_in_months': _currentCycle, // Dynamic cycle converted to int
         // Add Apple Pay specific parameters for better backend handling
@@ -503,30 +504,31 @@ class ApplePaySubscriptionService {
       if (response.statusCode != 200) {
         try {
           final responseData = jsonDecode(response.body);
-          
+
           // Check for various sandbox receipt indicators
           bool isSandboxReceipt = false;
-          
+
           if (responseData['error'] != null) {
             final errorString = responseData['error'].toString();
             // Error 21007 means sandbox receipt used in production
             // Also check for other sandbox-related errors
-            if (errorString.contains('21007') || 
+            if (errorString.contains('21007') ||
                 errorString.contains('sandbox') ||
                 errorString.contains('Sandbox receipt used in production')) {
               isSandboxReceipt = true;
             }
           }
-          
+
           // Also check response message for sandbox indicators
           if (responseData['message'] != null) {
-            final messageString = responseData['message'].toString().toLowerCase();
-            if (messageString.contains('sandbox') || 
+            final messageString =
+                responseData['message'].toString().toLowerCase();
+            if (messageString.contains('sandbox') ||
                 messageString.contains('test environment')) {
               isSandboxReceipt = true;
             }
           }
-          
+
           if (isSandboxReceipt) {
             print(
                 'DEBUG: Sandbox receipt detected (error: ${responseData['error']}), retrying with sandbox environment');
@@ -590,12 +592,13 @@ class ApplePaySubscriptionService {
 
     final errorMessage =
         purchaseDetails.error?.message ?? 'Unknown purchase error';
-    
+
     // Check for specific duplicate product object error
-    if (errorMessage.contains('storekit_duplicate_product_object') || 
+    if (errorMessage.contains('storekit_duplicate_product_object') ||
         errorMessage.contains('pending transaction for the same product')) {
-      _onError?.call('Purchase error: There is a pending transaction for this product. Please wait for it to complete or try again later.');
-      
+      _onError?.call(
+          'Purchase error: There is a pending transaction for this product. Please wait for it to complete or try again later.');
+
       // Try to complete any pending transactions for this product
       _completePendingTransactionsForProduct(purchaseDetails.productID);
     } else {
@@ -628,25 +631,30 @@ class ApplePaySubscriptionService {
   /// Complete pending transactions for a specific product to avoid duplicate errors
   void _completePendingTransactionsForProduct(String productId) async {
     try {
-      print('DEBUG: Attempting to complete pending transactions for product: $productId');
-      
+      print(
+          'DEBUG: Attempting to complete pending transactions for product: $productId');
+
       // Find and complete any pending transactions for this product
-      final pendingTransactions = _purchases.where((purchase) => 
-        purchase.productID == productId && 
-        purchase.pendingCompletePurchase
-      ).toList();
-      
+      final pendingTransactions = _purchases
+          .where((purchase) =>
+              purchase.productID == productId &&
+              purchase.pendingCompletePurchase)
+          .toList();
+
       for (final transaction in pendingTransactions) {
-        print('DEBUG: Completing pending transaction: ${transaction.purchaseID}');
+        print(
+            'DEBUG: Completing pending transaction: ${transaction.purchaseID}');
         await _inAppPurchase.completePurchase(transaction);
       }
-      
+
       // Clear the product from timestamps to allow new purchase
       _purchaseTimestamps.remove(productId);
-      
-      print('DEBUG: Completed ${pendingTransactions.length} pending transactions for $productId');
+
+      print(
+          'DEBUG: Completed ${pendingTransactions.length} pending transactions for $productId');
     } catch (e) {
-      print('ERROR: Failed to complete pending transactions for $productId: $e');
+      print(
+          'ERROR: Failed to complete pending transactions for $productId: $e');
     }
   }
 
@@ -768,23 +776,25 @@ class ApplePaySubscriptionService {
   Future<void> _checkAndCompletePendingTransactions() async {
     try {
       print('DEBUG: Checking for pending transactions...');
-      
+
       // Get all pending transactions
-      final pendingTransactions = _purchases.where((purchase) => 
-        purchase.pendingCompletePurchase
-      ).toList();
-      
+      final pendingTransactions = _purchases
+          .where((purchase) => purchase.pendingCompletePurchase)
+          .toList();
+
       if (pendingTransactions.isNotEmpty) {
-        print('DEBUG: Found ${pendingTransactions.length} pending transactions');
-        
+        print(
+            'DEBUG: Found ${pendingTransactions.length} pending transactions');
+
         for (final transaction in pendingTransactions) {
-          print('DEBUG: Completing pending transaction: ${transaction.purchaseID} for product: ${transaction.productID}');
+          print(
+              'DEBUG: Completing pending transaction: ${transaction.purchaseID} for product: ${transaction.productID}');
           await _inAppPurchase.completePurchase(transaction);
-          
+
           // Clear from timestamps to allow new purchases
           _purchaseTimestamps.remove(transaction.productID);
         }
-        
+
         print('DEBUG: Completed all pending transactions');
       } else {
         print('DEBUG: No pending transactions found');
@@ -819,19 +829,19 @@ class ApplePaySubscriptionService {
     _queryProductError = null;
     print('DEBUG: Apple Pay service reset');
   }
-  
+
   /// Enable debug mode for testing
   void enableDebugMode() {
     _debugMode = true;
     print('DEBUG: Apple Pay debug mode enabled');
   }
-  
+
   /// Disable debug mode
   void disableDebugMode() {
     _debugMode = false;
     print('DEBUG: Apple Pay debug mode disabled');
   }
-  
+
   /// Check if debug mode is enabled
   bool get isDebugMode => _debugMode;
 

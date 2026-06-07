@@ -39,10 +39,6 @@ class _ArchiveChatState extends State<ArchiveChat> with WidgetsBindingObserver {
 
     await Permission.microphone.request();
 
-    await Permission.storage.request();
-
-    await Permission.photos.request();
-
     await Permission.contacts.request();
   }
 

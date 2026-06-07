@@ -618,12 +618,10 @@ packages:
   flutter_webrtc:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "81cac14ce15d855d24d0dd63e9925b77c8d26528"
-      url: "https://github.com/packages-primocys/flutter_webrtc.git"
-    source: git
-    version: "0.9.48+hotfix.1"
+      path: "packages/flutter_webrtc_16kb"
+      relative: true
+    source: path
+    version: "1.4.1"
   fluttertoast:
     dependency: "direct main"
     description:
@@ -825,7 +823,7 @@ packages:
     source: hosted
     version: "3.0.0"
   http_parser:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http_parser
       sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
@@ -1001,7 +999,7 @@ packages:
     source: hosted
     version: "0.0.1+3"
   light_compressor:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       path: "."
       ref: HEAD
@@ -1106,7 +1104,7 @@ packages:
     source: hosted
     version: "2.2.2"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
@@ -1180,10 +1178,9 @@ packages:
   pdf_render:
     dependency: "direct main"
     description:
-      name: pdf_render
-      sha256: bacd2ad8f4f4c9821827003065f5c2f9ca474dd418ff29c68272aab4c0e1e88b
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/pdf_render_16kb"
+      relative: true
+    source: path
     version: "1.4.12"
   peerdart:
     dependency: "direct main"
@@ -1291,7 +1288,7 @@ packages:
     source: hosted
     version: "2.1.8"
   provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: provider
       sha256: "4e82183fa20e5ca25703ead7e05de9e4cceed1fbd1eadc1ac3cb6f565a09f272"
@@ -1720,7 +1717,7 @@ packages:
     source: hosted
     version: "3.1.4"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"

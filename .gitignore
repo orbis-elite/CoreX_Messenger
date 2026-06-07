@@ -14,6 +14,7 @@ ios/Flutter/Flutter.podspec
 android/.gradle/
 android/app/build/
 android/build/
+**/.cxx/
 
 # macOS
 macos/Pods/
@@ -34,3 +35,11 @@ DerivedData/
 *.tmp
 *.temp
 .DS_Store
+*.icloud
+lib-1.0.0-live/
+lib-new-corex/
+
+# Signing secrets
+android/key.properties
+*.jks
+*.keystore

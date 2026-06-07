@@ -105,9 +105,9 @@ PODS:
     - Flutter
   - flutter_sim_country_code (0.0.1):
     - Flutter
-  - flutter_webrtc (0.9.36):
+  - flutter_webrtc (1.4.0):
     - Flutter
-    - WebRTC-SDK (= 114.5735.08)
+    - WebRTC-SDK (= 144.7559.01)
   - fluttertoast (0.0.2):
     - Flutter
   - geocoding_ios (1.0.5):
@@ -269,7 +269,7 @@ PODS:
   - video_thumbnail (0.0.1):
     - Flutter
     - libwebp
-  - WebRTC-SDK (114.5735.08)
+  - WebRTC-SDK (144.7559.01)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -429,7 +429,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
   flutter_ringtone_player: 15eba85187230b87b2512f0e1b92225618bc03e7
   flutter_sim_country_code: 364e91e71f067cdec1dd1228eb4d1f13ab1a54e5
-  flutter_webrtc: 55df3aaa802114dad390191a46c2c8d535751268
+  flutter_webrtc: 5aa37bfb8b834bff989a03182d1c4266a4f93377
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
   geocoding_ios: eafacae6ad11a1eb56681f7d11df602a5fd49416
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
@@ -464,7 +464,7 @@ SPEC CHECKSUMS:
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
-  WebRTC-SDK: c24d2a6c9f571f2ed42297cb8ffba9557093142b
+  WebRTC-SDK: ab9b5319e458c2bfebdc92b3600740da35d5630d
   webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
 
 PODFILE CHECKSUM: 6d1f177d2b7d384ec01d396130917db066ba0df7

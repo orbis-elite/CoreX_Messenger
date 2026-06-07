@@ -122,9 +122,7 @@ class _MessageReportPopupState extends State<MessageReportPopup> {
                 decoration: const InputDecoration(
                   hintText: 'Additional comments (optional)',
                   hintStyle: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                      fontFamily: "Poppins"),
+                      fontSize: 12, color: Colors.grey, fontFamily: "Poppins"),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     borderSide: BorderSide(color: Colors.grey),
@@ -162,9 +160,10 @@ class _MessageReportPopupState extends State<MessageReportPopup> {
                                     .selectedReportIndex.value]
                                 .reportId
                                 .toString(),
-                            reportText: _reportTextController.text.trim().isEmpty
-                                ? null
-                                : _reportTextController.text.trim(),
+                            reportText:
+                                _reportTextController.text.trim().isEmpty
+                                    ? null
+                                    : _reportTextController.text.trim(),
                           );
                         }
                       },

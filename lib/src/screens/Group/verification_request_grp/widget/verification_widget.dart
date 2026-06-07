@@ -1,8 +1,6 @@
 import 'package:corexchat/app.dart';
 import 'package:flutter/material.dart';
 import 'package:corexchat/src/global/global.dart';
-import 'package:corexchat/src/global/strings.dart';
-import 'package:get/get.dart';
 
 class VerificationRequestWidget extends StatefulWidget {
   final String conversationID;

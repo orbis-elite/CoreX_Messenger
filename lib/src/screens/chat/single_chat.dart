@@ -8,7 +8,6 @@ import 'dart:ui';
 import 'dart:ui' as ui;
 import 'package:corexchat/main.dart';
 import 'package:corexchat/model/block_user_model.dart';
-import 'package:corexchat/model/userchatlist_model/userchatlist_model.dart';
 import 'package:corexchat/src/screens/chat/shareable/pinned_message_widget.dart';
 import 'package:corexchat/src/screens/chat/message_report_popup.dart';
 import 'package:corexchat/src/screens/chat/sticker/data/sticker_service.dart';

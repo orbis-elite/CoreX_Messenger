@@ -17,7 +17,6 @@ import 'package:lottie/lottie.dart';
 import 'package:corexchat/app.dart';
 import 'package:corexchat/controller/call_controller.dart/get_roomId_controller.dart';
 import 'package:corexchat/controller/user_chatlist_controller.dart';
-import 'package:corexchat/Models/calls_Model/joined_users_model.dart';
 import 'package:corexchat/native_controller/audio_native_controller.dart';
 import 'package:corexchat/src/Notification/one_signal_service.dart';
 import 'package:corexchat/src/global/api_helper.dart';

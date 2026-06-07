@@ -87,7 +87,6 @@ import 'package:corexchat/src/screens/chat/imageView.dart';
 // =============================================================================
 
 class Media extends StatefulWidget {
-
   // ---------------------------------------------------------------------------
   // VARIABLES
   // ---------------------------------------------------------------------------
@@ -115,13 +114,11 @@ class Media extends StatefulWidget {
 // =============================================================================
 
 class _MediaState extends State<Media> {
-
   // ---------------------------------------------------------------------------
   // CONTROLLER
   // ---------------------------------------------------------------------------
 
-  final ChatProfileController chatProfileController =
-  Get.find();
+  final ChatProfileController chatProfileController = Get.find();
 
   // =============================================================================
   // INIT STATE
@@ -129,7 +126,6 @@ class _MediaState extends State<Media> {
 
   @override
   void initState() {
-
     super.initState();
 
     initializeProfile();
@@ -140,16 +136,9 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Future<void> initializeProfile() async {
-
-    if (
-    widget.peeid != null &&
-        widget.peeid!.isNotEmpty
-    ) {
-
+    if (widget.peeid != null && widget.peeid!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback(
-
-            (_) async {
-
+        (_) async {
           await chatProfileController.getProfileDATA(
             widget.peeid!,
           );
@@ -164,9 +153,7 @@ class _MediaState extends State<Media> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       // -----------------------------------------------------------------------
       // BACKGROUND
       // -----------------------------------------------------------------------
@@ -178,43 +165,28 @@ class _MediaState extends State<Media> {
       // -----------------------------------------------------------------------
 
       appBar: AppBar(
-
         backgroundColor: Colors.grey.shade100,
-
         elevation: 0,
-
         automaticallyImplyLeading: false,
-
         leadingWidth: 50,
-
         titleSpacing: 0,
-
         leading: InkWell(
-
           onTap: () {
-
             Navigator.pop(context);
           },
-
           child: const Icon(
             Icons.arrow_back_ios,
             size: 20,
             color: Colors.black,
           ),
         ),
-
         title: Text(
-
           capitalizeFirstLetter(
             widget.peername.toString(),
           ),
-
           style: const TextStyle(
-
             fontWeight: FontWeight.w500,
-
             fontSize: 18,
-
             color: chatColor,
           ),
         ),
@@ -225,25 +197,15 @@ class _MediaState extends State<Media> {
       // -----------------------------------------------------------------------
 
       body: Obx(
-
-            () {
-
+        () {
           return SafeArea(
-
             child: Container(
-
               color: Colors.transparent,
-
               height: MediaQuery.of(context).size.height,
-
               child: DefaultTabController(
-
                 length: 3,
-
                 child: Column(
-
                   children: <Widget>[
-
                     // ---------------------------------------------------------
                     // TOP SPACING
                     // ---------------------------------------------------------
@@ -276,59 +238,38 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildTabBar() {
-
     return Container(
-
       width: double.maxFinite,
-
       color: Colors.white,
-
       child: Center(
-
         child: TabBar(
-
           dividerColor: const Color.fromRGBO(
             236,
             236,
             236,
             1,
           ),
-
           indicatorColor: chatownColor,
-
           unselectedLabelStyle: const TextStyle(
-
             color: Colors.grey,
-
             fontWeight: FontWeight.w500,
-
             fontSize: 15,
           ),
-
           labelStyle: TextStyle(
-
             color: chatownColor,
-
             fontWeight: FontWeight.w500,
-
             fontSize: 15,
           ),
-
           tabs: [
-
             Tab(
               text:
-              '      ${languageController.textTranslate('Media')}        ',
+                  '      ${languageController.textTranslate('Media')}        ',
             ),
-
             Tab(
-              text:
-              '      ${languageController.textTranslate('Links')}       ',
+              text: '      ${languageController.textTranslate('Links')}       ',
             ),
-
             Tab(
-              text:
-              '      ${languageController.textTranslate('Docs')}        ',
+              text: '      ${languageController.textTranslate('Docs')}        ',
             ),
           ],
         ),
@@ -341,33 +282,23 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildBodyContent() {
-
-    final profile =
-        chatProfileController.profileModel.value;
+    final profile = chatProfileController.profileModel.value;
 
     // -------------------------------------------------------------------------
     // LOADING
     // -------------------------------------------------------------------------
 
-    if (
-    chatProfileController.isLoading.value &&
+    if (chatProfileController.isLoading.value &&
         profile != null &&
         profile.mediaData!.isEmpty &&
         profile.documentData!.isEmpty &&
-        profile.linkData!.isEmpty
-    ) {
-
+        profile.linkData!.isEmpty) {
       return Center(
-
         child: Column(
-
           children: [
-
             SizedBox(
-              height:
-              MediaQuery.sizeOf(context).height * 0.4,
+              height: MediaQuery.sizeOf(context).height * 0.4,
             ),
-
             loader(context),
           ],
         ),
@@ -379,7 +310,6 @@ class _MediaState extends State<Media> {
     // -------------------------------------------------------------------------
 
     if (profile == null) {
-
       return const SizedBox();
     }
 
@@ -388,15 +318,10 @@ class _MediaState extends State<Media> {
     // -------------------------------------------------------------------------
 
     return Expanded(
-
       child: TabBarView(
-
         children: [
-
           buildMediaTab(),
-
           buildLinksTab(),
-
           buildDocsTab(),
         ],
       ),
@@ -408,56 +333,33 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildMediaTab() {
-
-    final mediaData =
-    chatProfileController
-        .profileModel
-        .value!
-        .mediaData!;
+    final mediaData = chatProfileController.profileModel.value!.mediaData!;
 
     if (mediaData.isEmpty) {
-
       return buildEmptyWidget(
         "You haven't share any media",
       );
     }
 
     return Padding(
-
       padding: const EdgeInsets.only(top: 20),
-
       child: Container(
-
         width: MediaQuery.of(context).size.width,
-
         color: Colors.transparent,
-
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
         ),
-
         child: GridView.builder(
-
           padding: EdgeInsets.zero,
-
           shrinkWrap: true,
-
           physics: const BouncingScrollPhysics(),
-
-          gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
-
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-
             mainAxisExtent: 110,
-
             mainAxisSpacing: 10,
           ),
-
           itemCount: mediaData.length,
-
           itemBuilder: (context, index) {
-
             return mediaWidget(
               mediaData[index],
               index,
@@ -473,32 +375,20 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildLinksTab() {
-
-    final links =
-    chatProfileController
-        .profileModel
-        .value!
-        .linkData!;
+    final links = chatProfileController.profileModel.value!.linkData!;
 
     if (links.isEmpty) {
-
       return buildEmptyWidget(
         "You haven't share any link with",
       );
     }
 
     return Padding(
-
       padding: const EdgeInsets.only(top: 20),
-
       child: ListView.builder(
-
         padding: EdgeInsets.zero,
-
         itemCount: links.length,
-
         itemBuilder: (context, index) {
-
           return linkWidget(
             links[index],
             index,
@@ -513,32 +403,20 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildDocsTab() {
-
-    final docs =
-    chatProfileController
-        .profileModel
-        .value!
-        .documentData!;
+    final docs = chatProfileController.profileModel.value!.documentData!;
 
     if (docs.isEmpty) {
-
       return buildEmptyWidget(
         "You haven't share any doc with",
       );
     }
 
     return Padding(
-
       padding: const EdgeInsets.only(top: 20),
-
       child: ListView.builder(
-
         padding: EdgeInsets.zero,
-
         itemCount: docs.length,
-
         itemBuilder: (context, index) {
-
           return docsWidget(
             docs[index],
             index,
@@ -553,59 +431,31 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildEmptyWidget(String text) {
-
     return Center(
-
       child: Column(
-
-        crossAxisAlignment:
-        CrossAxisAlignment.center,
-
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           Container(
-            height:
-            MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.3,
           ),
-
           Padding(
-
-            padding:
-            const EdgeInsets.symmetric(horizontal: 15),
-
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Container(
-
-              width:
-              MediaQuery.sizeOf(context).width * 0.90,
-
+              width: MediaQuery.sizeOf(context).width * 0.90,
               decoration: BoxDecoration(
-
                 color: Colors.grey.shade200,
-
-                borderRadius:
-                BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10),
               ),
-
               child: Padding(
-
                 padding: const EdgeInsets.all(15),
-
                 child: Text(
-
                   '$text ${widget.peername}',
-
                   textAlign: TextAlign.center,
-
                   maxLines: 1,
-
                   overflow: TextOverflow.ellipsis,
-
                   style: const TextStyle(
-
                     color: chatColor,
-
                     fontSize: 15,
-
                     fontWeight: FontWeight.w300,
                   ),
                 ),
@@ -622,110 +472,64 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget mediaWidget(
-      MediaData data,
-      int index,
-      ) {
-
-    final isVideo =
-    data.url.toString().contains(".mp4");
+    MediaData data,
+    int index,
+  ) {
+    final isVideo = data.url.toString().contains(".mp4");
 
     return Padding(
-
-      padding:
-      const EdgeInsets.symmetric(horizontal: 3),
-
+      padding: const EdgeInsets.symmetric(horizontal: 3),
       child: InkWell(
-
         onTap: () {
-
           if (isVideo) {
-
             Navigator.push(
-
               context,
-
               MaterialPageRoute(
-
                 builder: (context) => VideoViewFix(
-
                   username: "",
-
                   url: data.url!,
-
                   play: true,
-
                   mute: false,
-
                   date: "",
                 ),
               ),
             );
           } else {
-
             log(data.url!);
 
             Navigator.push(
-
               context,
-
               PageTransition(
-
                 curve: Curves.linear,
-
-                type:
-                PageTransitionType.rightToLeft,
-
+                type: PageTransitionType.rightToLeft,
                 child: ImageView(
-
                   image: data.url!,
-
                   userimg: "",
                 ),
               ),
             );
           }
         },
-
         child: Stack(
-
           alignment: Alignment.center,
-
           children: [
-
             Container(
-
               height: 100,
-
               width: 100,
-
               color: Colors.grey.shade200,
-
               child: ClipRRect(
-
                 child: CachedNetworkImage(
-
-                  imageUrl:
-                  isVideo
-                      ? data.thumbnail!
-                      : data.url!,
-
+                  imageUrl: isVideo ? data.thumbnail! : data.url!,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-
             if (isVideo)
-
               Positioned(
-
                 top: 42,
-
                 child: Image.asset(
-
                   "assets/images/play1.png",
-
                   height: 22,
-
                   color: chatColor,
                 ),
               ),
@@ -740,54 +544,33 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget linkWidget(
-      LinkData data,
-      int index,
-      ) {
-
+    LinkData data,
+    int index,
+  ) {
     return Padding(
-
-      padding:
-      const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 3,
       ),
-
       child: InkWell(
-
         onTap: () {
-
           launchURL(data.message!);
         },
-
         child: Container(
-
           decoration: BoxDecoration(
-
             color: secondaryColor,
-
-            borderRadius:
-            BorderRadius.circular(10),
-
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(
-
               width: 1,
-
               color: const Color(0xffE8E8E8),
             ),
           ),
-
           child: Padding(
-
             padding: const EdgeInsets.all(5),
-
             child: FlutterLinkPreview(
-
               url: data.message!,
-
               builder: (info) {
-
                 if (info is WebInfo) {
-
                   return Text(
                     data.message!,
                     style: const TextStyle(
@@ -810,99 +593,59 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget docsWidget(
-      DocumentData data,
-      int index,
-      ) {
-
+    DocumentData data,
+    int index,
+  ) {
     return InkWell(
-
       onTap: () {
-
         Navigator.push(
-
           context,
-
           PageTransition(
-
             curve: Curves.linear,
-
-            type:
-            PageTransitionType.rightToLeft,
-
+            type: PageTransitionType.rightToLeft,
             child: FileView(
               file: data.url!,
             ),
           ),
         );
       },
-
       child: Padding(
-
-        padding:
-        const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 3,
         ),
-
         child: Container(
-
           padding: const EdgeInsets.all(7),
-
           decoration: BoxDecoration(
-
-            borderRadius:
-            BorderRadius.circular(10),
-
+            borderRadius: BorderRadius.circular(10),
             color: secondaryColor,
           ),
-
           child: Container(
-
             height: 58,
-
             decoration: BoxDecoration(
-
-              borderRadius:
-              BorderRadius.circular(10),
-
+              borderRadius: BorderRadius.circular(10),
               color: Colors.white,
             ),
-
             child: Row(
-
               children: [
-
                 const SizedBox(width: 10),
-
                 const Image(
-
                   height: 28,
-
                   image: AssetImage(
                     'assets/images/pdf.png',
                   ),
                 ),
-
                 Expanded(
-
                   child: FutureBuilder<Map<String, dynamic>>(
-
                     future: getPdfInfo(data.url!),
-
                     builder: (context, snapshot) {
-
-                      if (
-                      snapshot.connectionState ==
-                          ConnectionState.waiting
-                      ) {
-
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return buildPdfLoading(
                           data,
                         );
                       }
 
                       if (snapshot.hasData) {
-
                         return buildPdfData(
                           data,
                           snapshot.data!,
@@ -926,61 +669,39 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildPdfLoading(
-      DocumentData data,
-      ) {
-
+    DocumentData data,
+  ) {
     // -------------------------------------------------------------------------
     // SAFE FILE NAME
     // -------------------------------------------------------------------------
 
     final String safeFileName =
-        extractFilename(data.url ?? '') ??
-            'Unknown File';
+        extractFilename(data.url ?? '') ?? 'Unknown File';
 
-    final List<String> fileParts =
-    safeFileName.split("-");
+    final List<String> fileParts = safeFileName.split("-");
 
     final String finalFileName =
-    fileParts.isNotEmpty
-        ? fileParts.last
-        : safeFileName;
+        fileParts.isNotEmpty ? fileParts.last : safeFileName;
 
     return Column(
-
-      mainAxisAlignment:
-      MainAxisAlignment.center,
-
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
-
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Text(
-
           finalFileName,
-
           style: const TextStyle(
-
             color: chatColor,
-
             fontSize: 14,
-
             fontWeight: FontWeight.w500,
           ),
         ),
-
         Text(
-
           languageController.textTranslate(
             '0 Page - 0 KB',
           ),
-
           style: const TextStyle(
-
             color: Colors.grey,
-
             fontSize: 10,
-
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -993,70 +714,46 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget buildPdfData(
-      DocumentData data,
-      Map<String, dynamic> pdfData,
-      ) {
-
+    DocumentData data,
+    Map<String, dynamic> pdfData,
+  ) {
     // -------------------------------------------------------------------------
     // PDF INFO
     // -------------------------------------------------------------------------
 
-    final int pageCount =
-        pdfData['pageCount'] ?? 0;
+    final int pageCount = pdfData['pageCount'] ?? 0;
 
-    final String fileSize =
-        pdfData['fileSize'] ?? '0 KB';
+    final String fileSize = pdfData['fileSize'] ?? '0 KB';
 
     // -------------------------------------------------------------------------
     // SAFE FILE NAME
     // -------------------------------------------------------------------------
 
     final String safeFileName =
-        extractFilename(data.url ?? '') ??
-            'Unknown File';
+        extractFilename(data.url ?? '') ?? 'Unknown File';
 
-    final List<String> fileParts =
-    safeFileName.split("-");
+    final List<String> fileParts = safeFileName.split("-");
 
     final String finalFileName =
-    fileParts.isNotEmpty
-        ? fileParts.last
-        : safeFileName;
+        fileParts.isNotEmpty ? fileParts.last : safeFileName;
 
     return Column(
-
-      mainAxisAlignment:
-      MainAxisAlignment.center,
-
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
-
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Text(
-
           finalFileName,
-
           style: const TextStyle(
-
             color: chatColor,
-
             fontSize: 14,
-
             fontWeight: FontWeight.w500,
           ),
         ),
-
         Text(
-
           '$pageCount Page - $fileSize',
-
           style: const TextStyle(
-
             color: Colors.grey,
-
             fontSize: 10,
-
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -1069,25 +766,14 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Widget getUrlWidget(String url) {
-
     if (url.endsWith('.mp4')) {
-
       return FutureBuilder<Uint8List?>(
-
         future: getThumbnail(url),
-
         builder: (context, snapshot) {
-
-          if (
-          snapshot.connectionState ==
-              ConnectionState.done &&
-              snapshot.hasData
-          ) {
-
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
             return Image.memory(
-
               snapshot.data!,
-
               fit: BoxFit.fill,
             );
           }
@@ -1098,9 +784,7 @@ class _MediaState extends State<Media> {
     }
 
     return CachedNetworkImage(
-
       imageUrl: url,
-
       fit: BoxFit.fill,
     );
   }
@@ -1110,19 +794,13 @@ class _MediaState extends State<Media> {
   // =============================================================================
 
   Future<Uint8List?> getThumbnail(
-      String videoUrl,
-      ) async {
-
+    String videoUrl,
+  ) async {
     return await VideoThumbnail.thumbnailData(
-
       video: videoUrl,
-
       imageFormat: ImageFormat.JPEG,
-
       quality: 100,
-
       maxHeight: 100,
-
       maxWidth: 100,
     );
   }

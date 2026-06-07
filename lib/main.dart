@@ -100,8 +100,8 @@ import 'package:corexchat/src/screens/user/api_config_screen.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseBackgroundMessageHandler(
-    RemoteMessage message,
-    ) async {
+  RemoteMessage message,
+) async {
   try {
     await Firebase.initializeApp();
 
@@ -159,16 +159,11 @@ Future<void> main() async {
   // HIVE INITIALIZATION
   // ---------------------------------------------------------------------------
 
-  final Directory directory =
-  await getApplicationDocumentsDirectory();
+  final Directory directory = await getApplicationDocumentsDirectory();
 
   Hive.init(directory.path);
 
-  if (
-  Platform.isWindows ||
-      Platform.isLinux ||
-      Platform.isMacOS
-  ) {
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await Hive.initFlutter(appName);
   } else {
     await Hive.initFlutter();
@@ -197,7 +192,6 @@ class MyApp extends StatefulWidget {
 // =============================================================================
 
 class _MyAppState extends State<MyApp> {
-
   // ---------------------------------------------------------------------------
   // LOADING STATE
   // ---------------------------------------------------------------------------
@@ -220,9 +214,7 @@ class _MyAppState extends State<MyApp> {
   // =============================================================================
 
   Future<void> initializeApplication() async {
-
     try {
-
       // -----------------------------------------------------------------------
       // TIMEZONE
       // -----------------------------------------------------------------------
@@ -255,17 +247,11 @@ class _MyAppState extends State<MyApp> {
       // SOCKET INITIALIZATION
       // -----------------------------------------------------------------------
 
-      final dynamic currentUserId =
-      Hive.box(userdata).get(userId);
+      final dynamic currentUserId = Hive.box(userdata).get(userId);
 
-      if (
-      currentUserId != null &&
-          currentUserId.toString().isNotEmpty
-      ) {
-
+      if (currentUserId != null && currentUserId.toString().isNotEmpty) {
         await initializeSocket();
       } else {
-
         if (kDebugMode) {
           print("NO USER ID AVAILABLE");
         }
@@ -276,23 +262,17 @@ class _MyAppState extends State<MyApp> {
       // -----------------------------------------------------------------------
 
       if (mounted) {
-
         setState(() {
-
           isInitialized = true;
         });
       }
-
     } catch (e) {
-
       if (kDebugMode) {
         print("APPLICATION INITIALIZATION ERROR : $e");
       }
 
       if (mounted) {
-
         setState(() {
-
           isInitialized = true;
         });
       }
@@ -305,16 +285,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
-
       onTap: () {
-
         FocusScope.of(context).unfocus();
       },
-
       child: GetMaterialApp(
-
         // ---------------------------------------------------------------------
         // GENERAL
         // ---------------------------------------------------------------------
@@ -330,9 +305,7 @@ class _MyAppState extends State<MyApp> {
         // ---------------------------------------------------------------------
 
         theme: ThemeData(
-
           primarySwatch: Colors.blue,
-
           fontFamily: 'Poppins',
         ),
 
@@ -341,40 +314,24 @@ class _MyAppState extends State<MyApp> {
         // ---------------------------------------------------------------------
 
         home: isInitialized
-
             ? Obx(
-
-              () => Directionality(
-
-            textDirection:
-            Get.find<LanguageController>()
-                .textDirection(),
-
-            child:
-            ApiHelper.baseUrl ==
-                ApiHelper.staticBaseUrl
-
-                ? const ApiConfigScreen()
-
-                : const SplashScreen(),
-          ),
-        )
-
+                () => Directionality(
+                  textDirection: Get.find<LanguageController>().textDirection(),
+                  child: ApiHelper.baseUrl == ApiHelper.staticBaseUrl
+                      ? const ApiConfigScreen()
+                      : const SplashScreen(),
+                ),
+              )
             : const Scaffold(
-
-          backgroundColor: Colors.white,
-
-          body: Center(
-
-            child: CircularProgressIndicator(
-
-              valueColor:
-              AlwaysStoppedAnimation<Color>(
-                Colors.blue,
+                backgroundColor: Colors.white,
+                body: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.blue,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -385,13 +342,9 @@ class _MyAppState extends State<MyApp> {
 // =============================================================================
 
 Future<void> openHiveBox(String boxName) async {
-
   final box = await Hive.openBox(boxName).onError(
-
-        (error, stackTrace) async {
-
-      final Directory dir =
-      await getApplicationDocumentsDirectory();
+    (error, stackTrace) async {
+      final Directory dir = await getApplicationDocumentsDirectory();
 
       final String dirPath = dir.path;
 
@@ -403,12 +356,7 @@ Future<void> openHiveBox(String boxName) async {
       // DESKTOP SUPPORT
       // -----------------------------------------------------------------------
 
-      if (
-      Platform.isWindows ||
-          Platform.isLinux ||
-          Platform.isMacOS
-      ) {
-
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         dbFile = File(
           '$dirPath/$appName/$boxName.hive',
         );
@@ -445,7 +393,6 @@ Future<void> openHiveBox(String boxName) async {
   // ---------------------------------------------------------------------------
 
   if (box.length > 500) {
-
     await box.clear();
   }
 }
@@ -457,15 +404,9 @@ Future<void> openHiveBox(String boxName) async {
 SocketIntilized socketIntilized = SocketIntilized();
 
 Future<void> initializeSocket() async {
+  final token = Hive.box(userdata).get(authToken);
 
-  final token =
-  Hive.box(userdata).get(authToken);
-
-  if (
-  token != null &&
-      token.toString().isNotEmpty
-  ) {
-
+  if (token != null && token.toString().isNotEmpty) {
     await socketIntilized.initlizedsocket();
   }
 }

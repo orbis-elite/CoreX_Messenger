@@ -680,7 +680,8 @@ class _otpState extends State<otp> {
   Future<void> _setDataToHive(VerifyOTPModel profileDetailResponse) async {
     await Hive.box(userdata).put(userId, profileDetailResponse.resData!.userId);
     await Hive.box(userdata).put(userCountryName, widget.countryName);
-    await Hive.box(userdata).put(userCountryCode, profileDetailResponse.resData!.countryCode);
+    await Hive.box(userdata)
+        .put(userCountryCode, profileDetailResponse.resData!.countryCode);
     await Hive.box(userdata).put(authToken, profileDetailResponse.token);
     await Hive.box(userdata).put(
         userMobile,

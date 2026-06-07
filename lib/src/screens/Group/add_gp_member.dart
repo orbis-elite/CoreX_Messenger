@@ -270,7 +270,8 @@ class _AddMembersinGroup1State extends State<AddMembersinGroup1> {
             }
 
             // Safely get current user ID from Hive
-            final currentUserId = Hive.box(userdata).get(userId)?.toString() ?? "";
+            final currentUserId =
+                Hive.box(userdata).get(userId)?.toString() ?? "";
             final chatUserId = chatUserDetails.userId?.toString() ?? "";
 
             // Compare IDs and return appropriate widget

@@ -701,9 +701,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:corexchat/main.dart';
-import 'package:corexchat/src/global/api_helper.dart';
-import 'package:corexchat/src/global/strings.dart';
-import 'package:corexchat/src/screens/support/models/support_ticket_model.dart';
 import 'dart:developer' as dev;
 
 class SupportTicketProvider extends ChangeNotifier {

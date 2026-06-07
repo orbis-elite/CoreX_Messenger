@@ -4,20 +4,17 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-
 class SeekBar extends StatefulWidget {
   final Duration duration;
   final Duration position;
   final Duration bufferedPosition;
   final ValueChanged<Duration>? onChanged;
   final ValueChanged<Duration>? onChangeEnd;
-  
 
   const SeekBar({
     super.key,
     required this.duration,
     required this.position,
-
     required this.bufferedPosition,
     this.onChanged,
     this.onChangeEnd,
@@ -116,55 +113,6 @@ class SeekBarState extends State<SeekBar> {
             ),
           ],
         ),
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
       ],
     );
   }

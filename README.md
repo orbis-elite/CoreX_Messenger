@@ -1,67 +1,37 @@
-<<<<<<< HEAD
 # CoreX Messenger
 
 Global Connections. Seamless Communications.
 
-## Getting Started
+## Release Toolchain
 
-This project is built with Flutter 3.27.1 and uses the decal_dev branch for development.
+- Flutter 3.24.x
+- Dart 3.5.x
+- Java 17
+- Android SDK 36 (compile), API 35 (target)
+- Gradle 8.7
+- Android Gradle Plugin 8.6.0
+- Kotlin 2.2.20
+- NDK 26.1
+- iOS 14 or newer
 
-### Prerequisites
+## Setup
 
-- Flutter 3.27.1
-   ```
-   flutter version 3.27.1
-   ```
-- Dart SDK >=3.3.4 <4.0.0
-- Git
-- Android Studio or VS Code with Flutter extensions
-- For iOS development: Xcode (Mac only)
-- For Android development: Android SDK with minimum API level 21
-- A Firebase project (for backend services)
-   ```
-   # Install Firebase CLI
-   npm install -g firebase-tools
-   
-   # Login to Firebase
-   firebase login
-   
-   # Initialize Firebase in your project
-   flutterfire configure
-   ```
+```sh
+flutter pub get
+flutter analyze
+flutter test
+```
 
-### Installation
+Create Android release artifacts with:
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/CoreX_Messenger.git
-   ```
+```sh
+flutter build appbundle --release
+```
 
-2. Switch to the decal_dev branch:
-   ```
-   cd CoreX_Messenger
-   git checkout decal_dev
-   ```
+Create an iOS archive with:
 
-3. Install dependencies:
-   ```
-   flutter pub get
-   ```
+```sh
+flutter build ipa --release
+```
 
-4. Run the application:
-   ```
-   flutter run
-   ```
-
-## Resources
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-- [Flutter documentation](https://docs.flutter.dev/)
-
-## Notes for deval_dev Branch
-
-The decal_dev branch contains custom UI components and themes specific to the CoreX Messenger design system. Always ensure you're using Flutter 3.27.1 for compatibility with this branch.
-=======
-# CoreX_Messenger
->>>>>>> e8073a97d8627c2a0dcbacd6ca472a7d76eca00d
+Release signing files and store credentials must remain outside Git.

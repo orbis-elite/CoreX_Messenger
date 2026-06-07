@@ -24,8 +24,7 @@ class GetUserChatList {
     data['response_code'] = responseCode;
     data['message'] = message;
     if (messagesList != null) {
-      data['messages list'] =
-          messagesList!.map((v) => v.toJson()).toList();
+      data['messages list'] = messagesList!.map((v) => v.toJson()).toList();
     }
     data['status'] = status;
     return data;

@@ -1124,7 +1124,8 @@ class _FlutterContactsExampleState extends State<FlutterContactsExample> {
         height: 100,
         child: Center(
           child: Text(
-            languageController.textTranslate('You do not have any contact in chatweb!'),
+            languageController
+                .textTranslate('You do not have any contact in chatweb!'),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
         ),
@@ -1134,8 +1135,8 @@ class _FlutterContactsExampleState extends State<FlutterContactsExample> {
     // Filter contacts based on search text
     final filteredContacts = contactList
         .where((contact) =>
-    contact.fullName != null &&
-        contact.fullName!.toLowerCase().contains(searchText.toLowerCase()))
+            contact.fullName != null &&
+            contact.fullName!.toLowerCase().contains(searchText.toLowerCase()))
         .toList();
 
     // Handle when search has no matches
@@ -1193,19 +1194,21 @@ class _FlutterContactsExampleState extends State<FlutterContactsExample> {
             return ListTile(
               onTap: () {
                 // Safely access chat list model
-                final chatListModel = chatListController.userChatListModel.value;
+                final chatListModel =
+                    chatListController.userChatListModel.value;
                 if (chatListModel == null) {
                   debugPrint('Chat list model is null');
                   // Create new chat directly
                   Get.to(() => SingleChatMsg(
-                    conversationID: '',
-                    username: fullName,
-                    userPic: profileImage,
-                    mobileNum: phoneNumber,
-                    index: 0,
-                    userID: userId,
-                    verificationBadge: userDetails.verificationType?.logo ?? '',
-                  ));
+                        conversationID: '',
+                        username: fullName,
+                        userPic: profileImage,
+                        mobileNum: phoneNumber,
+                        index: 0,
+                        userID: userId,
+                        verificationBadge:
+                            userDetails.verificationType?.logo ?? '',
+                      ));
                   return;
                 }
 
@@ -1213,46 +1216,47 @@ class _FlutterContactsExampleState extends State<FlutterContactsExample> {
                 if (chatList == null || chatList.isEmpty) {
                   // Create new chat if chat list is empty
                   Get.to(() => SingleChatMsg(
-                    conversationID: '',
-                    username: fullName,
-                    userPic: profileImage,
-                    mobileNum: phoneNumber,
-                    index: 0,
-                    userID: userId,
-                    verificationBadge: userDetails.verificationType?.logo ?? '',
-                  ));
+                        conversationID: '',
+                        username: fullName,
+                        userPic: profileImage,
+                        mobileNum: phoneNumber,
+                        index: 0,
+                        userID: userId,
+                        verificationBadge:
+                            userDetails.verificationType?.logo ?? '',
+                      ));
                   return;
                 }
 
                 // Find existing conversation if any
-                final matchingChats = chatList.where(
-                        (element) => userId == element.userId?.toString()
-                );
+                final matchingChats = chatList
+                    .where((element) => userId == element.userId?.toString());
 
                 if (matchingChats.isNotEmpty) {
                   // Open existing chat
                   ChatList data = matchingChats.first;
                   Get.to(() => SingleChatMsg(
-                    conversationID: data.conversationId?.toString() ?? '',
-                    username: fullName,
-                    userPic: profileImage,
-                    mobileNum: phoneNumber,
-                    index: 0,
-                    isBlock: data.isBlock,
-                    userID: userId,
-                    verificationBadge: data.varificationType?.logo ?? '',
-                  ));
+                        conversationID: data.conversationId?.toString() ?? '',
+                        username: fullName,
+                        userPic: profileImage,
+                        mobileNum: phoneNumber,
+                        index: 0,
+                        isBlock: data.isBlock,
+                        userID: userId,
+                        verificationBadge: data.varificationType?.logo ?? '',
+                      ));
                 } else {
                   // Create new chat
                   Get.to(() => SingleChatMsg(
-                    conversationID: '',
-                    username: fullName,
-                    userPic: profileImage,
-                    mobileNum: phoneNumber,
-                    index: 0,
-                    userID: userId,
-                    verificationBadge: userDetails.verificationType?.logo ?? '',
-                  ));
+                        conversationID: '',
+                        username: fullName,
+                        userPic: profileImage,
+                        mobileNum: phoneNumber,
+                        index: 0,
+                        userID: userId,
+                        verificationBadge:
+                            userDetails.verificationType?.logo ?? '',
+                      ));
                 }
               },
               leading: Container(
@@ -1266,10 +1270,10 @@ class _FlutterContactsExampleState extends State<FlutterContactsExample> {
                   borderRadius: BorderRadius.circular(100),
                   child: userDetails.profileImage != null
                       ? CustomCachedNetworkImage(
-                    imageUrl: userDetails.profileImage!,
-                    placeholderColor: chatownColor,
-                    errorWidgeticon: const Icon(Icons.person),
-                  )
+                          imageUrl: userDetails.profileImage!,
+                          placeholderColor: chatownColor,
+                          errorWidgeticon: const Icon(Icons.person),
+                        )
                       : Icon(Icons.person, color: chatownColor),
                 ),
               ),
@@ -1363,7 +1367,6 @@ class _FlutterContactsExampleState extends State<FlutterContactsExample> {
       ],
     );
   }
-
 
   // Widget contactsWidget() {
   //   return getAllDeviceContact.isGetMYContectLoading.value == true

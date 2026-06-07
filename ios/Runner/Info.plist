@@ -34,7 +34,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>My description about why I need this capability</string>
+	<string>CoreX Messenger needs media library access when you choose audio to share in a chat.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Corex Messenger user need access to the camera for video calls.</string>
 	<key>NSContactsUsageDescription</key>
@@ -47,6 +47,8 @@
 	<string>Corex Messenger user need this capability for send audio message in chat.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Corex Messenger user need this capability for to send media in chat, set profile picture from phone library.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>CoreX Messenger needs permission to save media you choose to download.</string>
 	<key>OneSignal_APP_ID</key>
 	<string>fa0d2111-1ab5-49d7-ad5d-976b8d9d66a4</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

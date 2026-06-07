@@ -65,7 +65,7 @@ publish_to: "none"
 #
 # =============================================================================
 
-version: 1.4.2+26
+version: 1.5.8+28
 
 # =============================================================================
 # DART SDK
@@ -178,7 +178,8 @@ dependencies:
   file_picker: ^8.1.7
   share_plus: ^10.1.4
   pdf: ^3.11.1
-  pdf_render: ^1.4.10
+  pdf_render:
+    path: packages/pdf_render_16kb
   syncfusion_flutter_pdfviewer: ^20.4.54
 
   # ---------------------------------------------------------------------------
@@ -227,8 +228,7 @@ dependencies:
   # ---------------------------------------------------------------------------
 
   flutter_webrtc:
-    git:
-      url: https://github.com/packages-primocys/flutter_webrtc.git
+    path: packages/flutter_webrtc_16kb
 
   peerdart: ^0.5.2
 
@@ -322,7 +322,17 @@ dependencies:
 #
 # =============================================================================
 
+  uuid: any
+  light_compressor: any
+  path: any
+  http_parser: any
+  provider: any
 dependency_overrides:
+
+  # Peerdart still declares an older compatible range, while CoreX needs the
+  # official 16 KB page-size compatible Android WebRTC binary.
+  flutter_webrtc:
+    path: packages/flutter_webrtc_16kb
 
   # ---------------------------------------------------------------------------
   # INTL FIX
@@ -359,14 +369,6 @@ dependency_overrides:
   # "Record is abstract"
   #
   # ---------------------------------------------------------------------------
-
-  # ---------------------------------------------------------------------------
-  # WEBRTC FIX
-  # ---------------------------------------------------------------------------
-
-  flutter_webrtc:
-    git:
-      url: https://github.com/packages-primocys/flutter_webrtc.git
 
   # ---------------------------------------------------------------------------
   # PLACE PICKER FIX

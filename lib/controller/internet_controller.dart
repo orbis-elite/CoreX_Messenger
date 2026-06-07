@@ -10,7 +10,7 @@
 
 //   @override
 //   void onInit() {
-//    
+//
 //     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
 //       checkInternet();
 //     });
@@ -37,7 +37,7 @@
 //   }
 
 //   checkInternet() async {
-//    
+//
 //     var subscription = Connectivity()
 //         .onConnectivityChanged
 //         .listen((ConnectivityResult result) async {
@@ -47,7 +47,7 @@
 //       } else {
 //         isOnline.value = await InternetConnectionChecker().hasConnection;
 //         log("VALUE OF ONLINE : ${isOnline.value}");
-//        
+//
 //       }
 //     });
 //   }

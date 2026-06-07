@@ -7,7 +7,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:corexchat/main.dart';
 import 'package:corexchat/src/screens/chat/sticker/data/models/sticker_model.dart';
-import 'package:corexchat/src/screens/chat/sticker/data/sticker_service.dart';
 import 'package:corexchat/src/screens/chat/sticker/widget/sticker_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

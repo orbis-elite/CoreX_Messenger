@@ -630,7 +630,6 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
 import 'package:corexchat/src/global/global.dart';
-import 'package:corexchat/src/screens/normal_badge_request/badge_request_screen.dart';
 import 'package:corexchat/src/screens/subscription/payment/web/payment_webview.dart';
 import 'package:corexchat/src/screens/subscription/verification_request/submit_form.dart';
 import 'package:corexchat/src/screens/subscription/payment/subscription_form.dart';

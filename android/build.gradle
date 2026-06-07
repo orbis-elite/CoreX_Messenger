@@ -18,34 +18,6 @@
 // =============================================================================
 
 // =============================================================================
-// KOTLIN VERSION
-// =============================================================================
-
-buildscript {
-
-    ext.kotlin_version = '1.9.24'
-
-    repositories {
-
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-
-    dependencies {
-
-        // Android Gradle Plugin
-        classpath 'com.android.tools.build:gradle:8.2.2'
-
-        // Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // Google Services
-        classpath 'com.google.gms:google-services:4.4.2'
-    }
-}
-
-// =============================================================================
 // ALL PROJECTS
 // =============================================================================
 
@@ -89,9 +61,9 @@ subprojects {
 
             project.android {
 
-                compileSdkVersion 35
+                compileSdkVersion 36
 
-                buildToolsVersion "35.0.0"
+                buildToolsVersion "36.0.0"
 
                 if (namespace == null) {
 
