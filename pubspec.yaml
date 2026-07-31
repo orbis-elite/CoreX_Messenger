@@ -65,7 +65,7 @@ publish_to: "none"
 #
 # =============================================================================
 
-version: 1.5.8+28
+version: 1.5.9+29
 
 # =============================================================================
 # DART SDK
@@ -296,8 +296,9 @@ dependencies:
   # PURCHASE / SUBSCRIPTION
   # ---------------------------------------------------------------------------
 
-  in_app_purchase: ^3.1.11
-  in_app_purchase_storekit: ^0.3.6+4
+  in_app_purchase: 3.2.3
+  in_app_purchase_android: ^0.5.0
+  in_app_purchase_storekit: ^0.4.0
 
   # ---------------------------------------------------------------------------
   # WINDOWS SUPPORT
@@ -333,6 +334,12 @@ dependency_overrides:
   # official 16 KB page-size compatible Android WebRTC binary.
   flutter_webrtc:
     path: packages/flutter_webrtc_16kb
+
+  # Required by Google Play policy from August 31, 2026. This keeps the public
+  # in_app_purchase API compatible with Flutter 3.24 while using Android Billing
+  # Client 8.0.0 through a locally pinned Android implementation package.
+  in_app_purchase_android:
+    path: packages/in_app_purchase_android_billing8
 
   # ---------------------------------------------------------------------------
   # INTL FIX
