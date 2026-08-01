@@ -65,7 +65,7 @@ publish_to: "none"
 #
 # =============================================================================
 
-version: 1.5.9+29
+version: 1.6.0+30
 
 # =============================================================================
 # DART SDK
@@ -340,6 +340,26 @@ dependency_overrides:
   # Client 8.0.0 through a locally pinned Android implementation package.
   in_app_purchase_android:
     path: packages/in_app_purchase_android_billing8
+
+  # Keeps Flutter 3.24 compatibility while fixing Swift compilation with
+  # current Xcode/Codemagic SDKs.
+  webview_flutter_wkwebview:
+    path: packages/webview_flutter_wkwebview_xcode_fix
+
+  # Fixes StoreKit Objective-C availability macros for current Xcode builds
+  # while keeping the same public in_app_purchase API used by the app.
+  in_app_purchase_storekit:
+    path: packages/in_app_purchase_storekit_xcode_fix
+
+  # Guards iOS 18 Contacts authorization cases so local/Codemagic SDKs that do
+  # not expose CNAuthorizationStatusLimited can still compile the app.
+  permission_handler_apple:
+    path: packages/permission_handler_apple_xcode_fix
+
+  # Uses the existing MIME-type fallback instead of SDK-specific constants that
+  # are unavailable in some Xcode/Codemagic environments.
+  audioplayers_darwin:
+    path: packages/audioplayers_darwin_xcode_fix
 
   # ---------------------------------------------------------------------------
   # INTL FIX

@@ -296,6 +296,52 @@ post_install do |installer|
       ]
     end
   end
+
+  sdwebimage_metadata =
+      File.join(
+          installer.sandbox.root.to_s,
+          'SDWebImage',
+          'SDWebImage',
+          'Core',
+          'UIImage+Metadata.m'
+      )
+
+  if File.exist?(sdwebimage_metadata)
+
+    contents = File.read(sdwebimage_metadata)
+
+    contents.gsub!(
+        'return self.isHighDynamicRange;',
+        'return [SDImageCoderHelper CGImageIsHDR:self.CGImage];'
+    )
+
+    File.chmod(0644, sdwebimage_metadata)
+
+    File.write(sdwebimage_metadata, contents)
+  end
+
+  sdwebimage_animated_coder =
+      File.join(
+          installer.sandbox.root.to_s,
+          'SDWebImage',
+          'SDWebImage',
+          'Core',
+          'SDImageIOAnimatedCoder.m'
+      )
+
+  if File.exist?(sdwebimage_animated_coder)
+
+    contents = File.read(sdwebimage_animated_coder)
+
+    contents.gsub!(
+        /    if \(@available\(macOS 14, iOS 17, tvOS 17, watchOS 10, \*\)\) \{\n        if \(decodeToHDR\) \{\n            decodingOptions\[\(__bridge NSString \*\)kCGImageSourceDecodeRequest\] = \(__bridge NSString \*\)kCGImageSourceDecodeToHDR;\n        \} else \{\n            decodingOptions\[\(__bridge NSString \*\)kCGImageSourceDecodeRequest\] = \(__bridge NSString \*\)kCGImageSourceDecodeToSDR;\n        \}\n    \}\n/m,
+        ''
+    )
+
+    File.chmod(0644, sdwebimage_animated_coder)
+
+    File.write(sdwebimage_animated_coder, contents)
+  end
 end
 
 # =============================================================================

@@ -85,12 +85,14 @@ typedef void (^NavigatorUserMediaSuccessCallback)(RTCMediaStream* mediaStream);
         }
 #endif
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 170000 || __MAC_OS_X_VERSION_MAX_ALLOWED >= 140000 || __TV_OS_VERSION_MAX_ALLOWED >= 170000
         if (@available(iOS 17.0, macOS 14.0, tvOS 17.0, *)) {
             deviceTypes = [deviceTypes arrayByAddingObjectsFromArray: @[
                 AVCaptureDeviceTypeContinuityCamera,
                 AVCaptureDeviceTypeExternal,
             ]];
         }
+#endif
 
         return [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:deviceTypes
                                                                       mediaType:AVMediaTypeVideo

@@ -238,7 +238,7 @@ PODS:
     - FlutterMacOS
   - pdf_render (0.0.1):
     - Flutter
-  - permission_handler_apple (9.3.0):
+  - permission_handler_apple (9.4.8):
     - Flutter
   - PromisesObjC (2.4.0)
   - qr_code_scanner (0.2.0):
@@ -450,7 +450,7 @@ SPEC CHECKSUMS:
   OneSignalXCFramework: 2b46c36b38528b65dce33ed9d83375f8c98bf40c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   pdf_render: 0b4e1a615aab83ce88b26c57753049424908a755
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  permission_handler_apple: ee2fe0fd04551b304eb002714ff067c371c822ed
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
@@ -467,6 +467,6 @@ SPEC CHECKSUMS:
   WebRTC-SDK: ab9b5319e458c2bfebdc92b3600740da35d5630d
   webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
 
-PODFILE CHECKSUM: 6d1f177d2b7d384ec01d396130917db066ba0df7
+PODFILE CHECKSUM: f726189767b0de821cdfeea400b248e18c5a17f0
 
 COCOAPODS: 1.14.3

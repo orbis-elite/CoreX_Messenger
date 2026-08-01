@@ -81,7 +81,7 @@ android {
 
         minSdk 24
 
-        targetSdk 35
+        targetSdk 36
 
         versionCode flutterVersionCode.toInteger()
 
@@ -132,8 +132,8 @@ android {
 
             signingConfig signingConfigs.release
 
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
 
             proguardFiles(
 

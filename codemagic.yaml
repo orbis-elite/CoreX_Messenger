@@ -12,8 +12,8 @@ workflows:
       cocoapods: default
       vars:
         BUNDLE_ID: com.corexmessenger.chat
-        RELEASE_NAME: 1.5.9
-        RELEASE_NUMBER: "29"
+        RELEASE_NAME: 1.6.0
+        RELEASE_NUMBER: "30"
 
     cache:
       cache_paths:
@@ -24,9 +24,9 @@ workflows:
       - name: Verify release metadata
         script: |
           set -e
-          grep -q '^version: 1.5.9+29$' pubspec.yaml
-          grep -q 'MARKETING_VERSION = 1.5.9;' ios/Runner.xcodeproj/project.pbxproj
-          grep -q 'CURRENT_PROJECT_VERSION = 29;' ios/Runner.xcodeproj/project.pbxproj
+          grep -q '^version: 1.6.0+30$' pubspec.yaml
+          grep -q 'MARKETING_VERSION = 1.6.0;' ios/Runner.xcodeproj/project.pbxproj
+          grep -q 'CURRENT_PROJECT_VERSION = 30;' ios/Runner.xcodeproj/project.pbxproj
           grep -q 'WebRTC-SDK (144.7559.01)' ios/Podfile.lock
 
       - name: Install Flutter dependencies
