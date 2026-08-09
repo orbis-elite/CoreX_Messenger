@@ -496,6 +496,11 @@ class OnesignalService {
                   additionalData["sender_profile_image"].toString(),
               receiverUserName: additionalData["senderName"].toString(),
               isGroupCall: additionalData['is_group'].toString(),
+              badgelogo: additionalData['Varification_type']
+                      is Map<String, dynamic>
+                  ? additionalData['Varification_type']['logo']?.toString() ??
+                      ''
+                  : '',
             ));
           }
         } else if (event.result.actionId == "decline") {
