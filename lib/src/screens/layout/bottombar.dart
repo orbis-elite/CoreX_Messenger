@@ -395,8 +395,8 @@ class _TabbarScreenState extends State<TabbarScreen>
       isLoading = true; // Set loading to true at the beginning
     });
 
-    if (Hive.box(userdata).get(authToken) == '' &&
-        Hive.box(userdata).get(authToken) == null) {
+    final authTokenValue = Hive.box(userdata).get(authToken);
+    if (authTokenValue != null && authTokenValue.toString().isNotEmpty) {
       socketIntilized.initlizedsocket();
     }
 
@@ -501,8 +501,6 @@ class _TabbarScreenState extends State<TabbarScreen>
       await addContactController.getContactsFromGloble();
       print("@@@@@@@@@@@: ${addContactController.mobileContacts.runtimeType}");
       log("MY_DEVICE_CONTACS: ${addContactController.mobileContacts}");
-    } else {
-      permissionAcessPhone();
     }
   }
 

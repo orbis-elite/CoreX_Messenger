@@ -191,6 +191,8 @@ class RoomIdController extends GetxController {
     VoidCallback? callback,
   }) {
     try {
+      if (socketIntilized.socket?.connected != true) return;
+      socketIntilized.socket!.off("connected-user-list");
       socketIntilized.socket!.on("connected-user-list", (data) {
         if (kDebugMode) {
           print("connected-user-list DATA  $data");

@@ -93,12 +93,12 @@ class SocketIntilized {
     });
 
     // Log all incoming events (useful for debugging)
-    socket!.onAny((event, data) {
-      log('Socket Event: $event, Data: $data');
-      if (kDebugMode) {
+    if (kDebugMode) {
+      socket!.onAny((event, data) {
+        log('Socket Event: $event, Data: $data');
         print('📩 Socket event: $event');
-      }
-    });
+      });
+    }
 
     if (kDebugMode) {
       print("Socket Activated");

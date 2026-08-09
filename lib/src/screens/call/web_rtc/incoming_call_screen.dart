@@ -431,9 +431,18 @@ class _IncomingCallScrennState extends State<IncomingCallScrenn> {
 
   @override
   void dispose() {
-    localRenderer.srcObject!.getTracks().forEach((track) => track.stop());
-    localRenderer.srcObject!.getAudioTracks().forEach((track) => track.stop());
-    localRenderer.srcObject!.getVideoTracks().forEach((track) => track.stop());
+    final srcObject = localRenderer.srcObject;
+    if (srcObject != null) {
+      for (final track in srcObject.getTracks()) {
+        track.stop();
+      }
+      for (final track in srcObject.getAudioTracks()) {
+        track.stop();
+      }
+      for (final track in srcObject.getVideoTracks()) {
+        track.stop();
+      }
+    }
 
     localRenderer.dispose();
 

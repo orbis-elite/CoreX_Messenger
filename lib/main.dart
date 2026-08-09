@@ -127,8 +127,6 @@ Future<void> main() async {
   // SYSTEM UI CONFIGURATION
   // ---------------------------------------------------------------------------
 
-  WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
-
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -392,8 +390,11 @@ Future<void> openHiveBox(String boxName) async {
   // CLEAN LARGE BOXES
   // ---------------------------------------------------------------------------
 
-  if (box.length > 500) {
-    await box.clear();
+  // Avoid wiping auth/session data on large local caches.
+  if (box.length > 5000) {
+    if (kDebugMode) {
+      print('Hive box $boxName is unusually large (${box.length} entries).');
+    }
   }
 }
 

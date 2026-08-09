@@ -39,6 +39,9 @@ class SingleChatContorller extends GetxController {
   RxBool isClear = false.obs;
   Rx<ClearAllChatModel?> clearChatModel = ClearAllChatModel().obs;
 
+  Timer? _sendTimeout;
+  String? _activeConversationId;
+
   // get message list
   getdetailschat(
     conversationID, {
@@ -47,6 +50,12 @@ class SingleChatContorller extends GetxController {
   }) async {
     try {
       isLoading(true);
+      _activeConversationId = conversationID.toString();
+
+      if (socketIntilized.socket?.connected != true) {
+        isLoading(false);
+        return;
+      }
 
       // Emit the initial request for messages
       socketIntilized.socket!.emit("messageReceived", {
@@ -57,6 +66,37 @@ class SingleChatContorller extends GetxController {
 
       // Remove any existing listeners to prevent duplicates
       socketIntilized.socket!.off("messageReceived");
+      socketIntilized.socket!.off("update_data");
+
+      socketIntilized.socket!.on("update_data", (data) {
+        print("data: $data");
+        if (socketIntilized.socket?.connected != true) return;
+        socketIntilized.socket!.emit("ChatList");
+        if ((data["conversation_id"]).toString() ==
+            _activeConversationId.toString()) {
+          final deleteIds = data["delete_from_everyone_ids"];
+          if (deleteIds is List && deleteIds.isNotEmpty) {
+            for (final id in deleteIds) {
+              debugPrint("delete_from_everyone_id $id");
+              final messages = userdetailschattModel.value?.messageList;
+              if (messages == null) continue;
+              for (final message in messages) {
+                if (message.messageId.toString() == id.toString()) {
+                  message.deleteFromEveryone = true;
+                  break;
+                }
+              }
+            }
+            userdetailschattModel.refresh();
+          } else {
+            socketIntilized.socket!.emit("messageReceived", {
+              "conversation_id": _activeConversationId.toString(),
+              "user_timezone": Hive.box(userdata).get(utcLocaName),
+              "per_page_message": 1,
+            });
+          }
+        }
+      });
 
       // Listen for messages
       socketIntilized.socket!.on("messageReceived", (data) {
@@ -156,33 +196,6 @@ class SingleChatContorller extends GetxController {
 
         isLoading(false);
         userdetailschattModel.refresh();
-        socketIntilized.socket!.on(
-          "update_data",
-          (data) {
-            print("data: $data");
-            socketIntilized.socket!.emit("ChatList");
-            if ((data["conversation_id"]).toString() ==
-                conversationID.toString()) {
-              if (data["delete_from_everyone_ids"].toList().isNotEmpty) {
-                data["delete_from_everyone_ids"].map((id) {
-                  debugPrint("delete_from_everyone_id $id");
-                  userdetailschattModel.value!.messageList!
-                      .where((element) =>
-                          element.messageId.toString() == id.toString())
-                      .first
-                      .deleteFromEveryone = true;
-                }).toList();
-                userdetailschattModel.refresh();
-              } else {
-                socketIntilized.socket!.emit("messageReceived", {
-                  "conversation_id": conversationID.toString(),
-                  "user_timezone": Hive.box(userdata).get(utcLocaName),
-                  "per_page_message": 1,
-                });
-              }
-            }
-          },
-        );
       });
     } catch (e) {
       log("Error ${e.toString()}");
@@ -192,7 +205,8 @@ class SingleChatContorller extends GetxController {
   }
 
   loadingTime() {
-    Timer(const Duration(seconds: 15), () {
+    _sendTimeout?.cancel();
+    _sendTimeout = Timer(const Duration(seconds: 15), () {
       if (isSendMsg.value == true) {
         isSendMsg(false);
         showCustomToast('Something Wrong, Please Try Again');
@@ -1391,6 +1405,10 @@ class SingleChatContorller extends GetxController {
 
   @override
   void onClose() {
+    _sendTimeout?.cancel();
+    socketIntilized.socket?.off("messageReceived");
+    socketIntilized.socket?.off("update_data");
+    _activeConversationId = null;
     super.onClose();
     if (userdetailschattModel.value != null) {
       // Clear the message list if it exists

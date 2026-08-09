@@ -58,6 +58,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   bool isReciverConnect = false;
   bool isCallCutByMe = false;
   bool isCallCutCall = false;
+  Timer? _debugTimer;
 
   @override
   void initState() {
@@ -67,7 +68,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     checkIsRemoteUsersJoined();
     // Add periodic debug checks
 
-    Timer.periodic(Duration(seconds: 3), (timer) {
+    _debugTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -76,7 +77,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     });
     roomIdController.joinUsers(
       isCaller: widget.isCaller,
-      isGroupCall: bool.parse(widget.isGroupCall!),
+      isGroupCall: bool.tryParse(widget.isGroupCall ?? '') ?? false,
       callback: () {
         log("callback call");
         if (roomIdController.connnectdUsersData.length == 1) {
@@ -106,6 +107,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     _delayedCheckFuture = Future.delayed(
       const Duration(seconds: 45),
       () {
+        if (!mounted) return;
         if (remoteRenderers.isEmpty) {
           if (widget.isCaller == true) {
             stopRingtone();
@@ -181,6 +183,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     }
 
     myPeer!.on("open").listen((event) {
+      if (!mounted) return;
       setState(() {
         peerid = event.toString();
       });
@@ -1273,13 +1276,14 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   }
 
   @override
-  void dispose() async {
-    await disposeLocalRender();
-    await disposeRemoteRender();
-    if (myPeer != null) {
-      myPeer!.dispose();
-    }
-
+  void dispose() {
+    _debugTimer?.cancel();
+    socketIntilized.socket?.off("user-connected-to-call");
+    socketIntilized.socket?.off("user-disconnected-from-call");
+    socketIntilized.socket?.off("call_decline");
+    disposeLocalRender();
+    disposeRemoteRender();
+    myPeer?.dispose();
     _delayedCheckFuture = Future.value();
     super.dispose();
   }

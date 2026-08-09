@@ -19,6 +19,8 @@ class OnlineOfflineController extends GetxController {
   RxList<TypingUserList> typingList = <TypingUserList>[].obs;
 
   forData() {
+    if (socketIntilized.socket?.connected != true) return;
+    socketIntilized.socket!.off("onlineUsers");
     socketIntilized.socket!.on("onlineUsers", (data) {
       if (kDebugMode) {
         print("ONLINE DATA  $data");
@@ -29,7 +31,8 @@ class OnlineOfflineController extends GetxController {
         }
         var respo = OnlineUsersModel.fromJson(data);
         onlineUserModel.value = respo;
-        allOnline.value = OnlineUsersModel.fromJson(data).onlineUserList!;
+        allOnline.value =
+            OnlineUsersModel.fromJson(data).onlineUserList ?? [];
 
         log("ONLINE USER LIST ${onlineUserModel.value.onlineUserList}");
       } else {
@@ -41,13 +44,16 @@ class OnlineOfflineController extends GetxController {
         }
         var res = OnlineUsersModel.fromJson(data);
         onlineUserModel.value = res;
-        allOnline.value = OnlineUsersModel.fromJson(data).onlineUserList!;
+        allOnline.value =
+            OnlineUsersModel.fromJson(data).onlineUserList ?? [];
         log("${onlineUserModel.value.onlineUserList}");
       }
     });
   }
 
   offlineUser() {
+    if (socketIntilized.socket?.connected != true) return;
+    socketIntilized.socket!.off("userLastSeenList");
     socketIntilized.socket!.on("userLastSeenList", (data) {
       if (kDebugMode) {
         print("OFFLINE DATA  $data");
@@ -58,7 +64,8 @@ class OnlineOfflineController extends GetxController {
         }
         var respo = LastSeenModel.fromJson(data);
         lastSeenModel.value = respo;
-        allOffline.value = LastSeenModel.fromJson(data).lastSeenUserList!;
+        allOffline.value =
+            LastSeenModel.fromJson(data).lastSeenUserList ?? [];
         log("OFFLINE USER LIST ${lastSeenModel.value.lastSeenUserList}");
       } else {
         if (kDebugMode) {
@@ -69,26 +76,31 @@ class OnlineOfflineController extends GetxController {
         }
         var res = LastSeenModel.fromJson(data);
         lastSeenModel.value = res;
-        allOffline.value = LastSeenModel.fromJson(data).lastSeenUserList!;
+        allOffline.value =
+            LastSeenModel.fromJson(data).lastSeenUserList ?? [];
         log("${lastSeenModel.value.lastSeenUserList}");
       }
     });
   }
 
   isTyping() {
+    if (socketIntilized.socket?.connected != true) return;
+    socketIntilized.socket!.off('isTyping');
     socketIntilized.socket!.on('isTyping', (data) {
       if (typingUserListModel.value!.typingUserList == null) {
         log(data.toString());
         var respo = TypingUserModel.fromJson(data);
         typingUserListModel.value = respo;
-        typingList.value = TypingUserModel.fromJson(data).typingUserList!;
+        typingList.value =
+            TypingUserModel.fromJson(data).typingUserList ?? [];
         typingList.refresh();
         typingloder = false;
       } else {
         log(data.toString());
         var respo = TypingUserModel.fromJson(data);
         typingUserListModel.value = respo;
-        typingList.value = TypingUserModel.fromJson(data).typingUserList!;
+        typingList.value =
+            TypingUserModel.fromJson(data).typingUserList ?? [];
         typingList.refresh();
         typingloder = false;
       }

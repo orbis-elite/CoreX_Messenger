@@ -67,6 +67,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
   bool isReciverConnect = false;
   bool isCallCutByMe = false;
   bool isCallCutCall = false;
+  Timer? _debugTimer;
 
   @override
   void initState() {
@@ -76,7 +77,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
     checkIsRemoteUsersJoined();
     roomIdController.joinUsers(
       isCaller: widget.isCaller,
-      isGroupCall: bool.parse(widget.isGroupCall!),
+      isGroupCall: bool.tryParse(widget.isGroupCall ?? '') ?? false,
       callback: () {
         log("callback call");
         if (roomIdController.connnectdUsersData.length == 1) {
@@ -99,7 +100,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
       },
     );
     // Add periodic debug checks
-    Timer.periodic(Duration(seconds: 3), (timer) {
+    _debugTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -114,6 +115,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
     _delayedCheckFuture = Future.delayed(
       const Duration(seconds: 45),
       () {
+        if (!mounted) return;
         if (remoteRenderers.isEmpty) {
           if (widget.isCaller == true) {
             stopRingtone();
@@ -196,6 +198,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
     }
 
     myPeer!.on("open").listen((event) {
+      if (!mounted) return;
       setState(() {
         peerid = event.toString();
       });
@@ -246,7 +249,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
 
           // Now assign the stream (use the correct key - rendererId not userId)
           if (remoteRenderers.containsKey(rendererId)) {
-            print("Assigning stream to renderer for: $rendererId");
+            if (!mounted) return;
             setState(() {
               remoteRenderers[rendererId]!.srcObject = stream;
             });
@@ -290,12 +293,14 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
             RTCVideoRenderer renderer = RTCVideoRenderer();
             await renderer.initialize();
 
+            if (!mounted) return;
             setState(() {
               remoteRenderers[rendererId] = renderer;
               remoteRenderers[rendererId]!.srcObject = remoteStream;
               print("Renderer created and stream assigned for: $rendererId");
             });
           } else {
+            if (!mounted) return;
             setState(() {
               remoteRenderers[rendererId]!.srcObject = remoteStream;
               print("Stream assigned to existing renderer for: $rendererId");
@@ -957,9 +962,13 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
 
   @override
   void dispose() {
+    _debugTimer?.cancel();
+    socketIntilized.socket?.off("user-connected-to-call");
+    socketIntilized.socket?.off("user-disconnected-from-call");
+    socketIntilized.socket?.off("call_decline");
     disposeLocalRender();
     disposeRemoteRender();
-    myPeer!.dispose();
+    myPeer?.dispose();
     _delayedCheckFuture = Future.value();
     _timer?.cancel();
     super.dispose();

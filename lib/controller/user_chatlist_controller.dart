@@ -42,6 +42,8 @@ class ChatListController extends GetxController {
   forChatList() async {
     isChatListLoading(true);
     try {
+      if (socketIntilized.socket?.connected != true) return;
+      socketIntilized.socket!.off("ChatList");
       socketIntilized.socket!.emit("ChatList");
       print("Emitted");
 
@@ -106,6 +108,8 @@ class ChatListController extends GetxController {
   forArchiveChatList() async {
     isChatListLoading(true);
     try {
+      if (socketIntilized.socket?.connected != true) return;
+      socketIntilized.socket!.off("ArchiveList");
       socketIntilized.socket!.emit("ChatList");
       print("Emitted");
 
@@ -233,5 +237,12 @@ class ChatListController extends GetxController {
     } finally {
       isBlock(false);
     }
+  }
+
+  @override
+  void onClose() {
+    socketIntilized.socket?.off("ChatList");
+    socketIntilized.socket?.off("ArchiveList");
+    super.onClose();
   }
 }
